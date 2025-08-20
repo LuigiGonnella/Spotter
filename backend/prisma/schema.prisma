@@ -1,0 +1,156 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url = env("DATABASE_URL")
+}
+
+model User {
+    id Int @id @default(autoincrement())
+    email String @unique
+    passwordHash String? //opzionale per utenti OAuth
+    role Role @default(USER)
+    provider String?
+    providerId String?
+    createdAt DateTime @default(now())
+    refreshToken RefreshToken[]
+
+    //campi profilo
+    firstName String?
+    lastName String?
+    dateOfBirth DateTime?
+
+    memberships UserGym[] //relazione con le iscrizioni in palestra
+    workoutPlans WorkoutPlan[]
+    createdWorkouts DailyWorkout[] @relation("CreatedWorkouts")
+
+
+    @@map("users")
+}
+
+model RefreshToken {
+    id Int @id @default(autoincrement())
+    jti String @unique //identificativo
+    tokenHash String //contenuto hashato
+    userId Int
+    expiresAt DateTime
+    revoked Boolean @default(false)
+    createdAt DateTime @default(now())
+
+    //relazioni
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("refresh_tokens")
+}
+
+enum Role {
+    USER
+    GYM_ADMIN
+    SUPER_ADMIN
+}
+
+//palestra
+model Gym {
+    id Int @id @default(autoincrement())
+    name String
+    address String
+    city String
+    description String?
+
+    createdAt DateTime @default(now())
+
+    //relazioni
+    members UserGym[]
+
+    @@map("gyms")
+}
+
+//user-gym
+model UserGym {
+    id Int @id @default(autoincrement())
+    userId Int
+    gymId Int
+    joinedAt DateTime @default(now())
+    isActive Boolean @default(true)
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    gym Gym @relation(fields: [gymId], references: [id], onDelete: Cascade)
+}
+
+model DailyWorkout { 
+    id Int @id @default(autoincrement())
+    title String
+    description String?
+    duration Int?
+    createdAt DateTime @default(now())
+
+    createdBy Int
+    creator User @relation("CreatedWorkouts", fields: [createdBy], references: [id], onDelete: Cascade)
+
+    workoutExercises WorkoutExercise[]
+
+
+
+
+}
+
+model WorkoutPlan {//utente crea una sua scheda e può renderla pubblica. Può anche scegliere un workout già pubblico
+    id Int @id @default(autoincrement())
+    name String 
+    description String?
+    isPublic Boolean  @default(false)
+
+    weekSchedule Json // { "monday": 1, "tuesday": null, "wednesday": 2, etc. }
+
+
+    // Proprietario
+    userId Int
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    
+    isActive Boolean @default(true) //possiamo mostrare tutto lo storico delle schede pubbliche
+    createdAt DateTime @default(now())
+    likes Int @default(0) //mi piace degli utenti
+
+    @@map("workout_plans")
+
+}
+
+model Exercise {
+    id Int @id @default(autoincrement())
+    name String
+    description String?
+    muscleGroup String
+
+    workoutExercises WorkoutExercise[]
+    createdAt DateTime @default(now())
+
+    
+    @@map("exercises")
+}
+
+// Tabella di collegamento Exercise <-> DailyWorkout
+model WorkoutExercise {
+    id Int @id @default(autoincrement())
+    
+    // Configurazione specifica per questo workout
+    sets Int?
+    reps String? // "8-12", "10", "AMRAP", etc.
+    weight Decimal?
+    restTime Int? // Secondi di riposo
+    order Int // Ordine SPECIFICO per questo workout
+    notes String?
+    
+    // Relazioni
+    exerciseId Int
+    dailyWorkoutId Int
+    exercise Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+    dailyWorkout DailyWorkout @relation(fields: [dailyWorkoutId], references: [id], onDelete: Cascade)
+    
+    // Ordine univoco per workout
+    @@unique([dailyWorkoutId, order])
+    
+    @@map("workout_exercises")
+}
+

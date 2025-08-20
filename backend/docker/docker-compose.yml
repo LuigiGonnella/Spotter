@@ -1,0 +1,18 @@
+#serve per avviare redis quando testo localmente l'app
+
+#1) avvio Redis: docker compose up -d
+#2) fermo Redis: docker compose down
+
+version: "3.9"
+
+services:
+  redis:
+    image: redis:8.2
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      # monta il tuo redis.conf locale dentro al container
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]

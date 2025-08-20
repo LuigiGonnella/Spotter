@@ -12,6 +12,8 @@ Connecting people who already share the same space (gym, weight room, fitness ar
 - **Chat & Social** → direct chat with members to organize workouts.  
 - **Leaderboard & Ranking** → internal gym leaderboards for each exercise (e.g., bench press record 190 kg by Mario Rossi 🏆).  
 - **Discovery** → find new buddies in nearby gyms and expand your fitness network.  
+- **WorkoutPlan** → cerca utenti sulla piattaforma e accedi alle loro schede pubbliche
+- **WorkoutTracking** → inserisci la tua scheda e associala alla palestra che frequenti, tieni traccia degli allenamenti e degli esercizi
 
 ## 🎯 Why Spotter?
 Today, many people at the gym just exchange a nod. Spotter wants to close this gap, making socialization easier and turning the gym into an active, motivating, and fun community.
