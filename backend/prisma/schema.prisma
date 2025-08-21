@@ -21,10 +21,25 @@ model User {
     firstName String?
     lastName String?
     dateOfBirth DateTime?
+    bio String?
+    profileImage String? //URL
+
+    isPublic Boolean @default(false)
+
+    //sistema GymBros
+    sentBuddyRequests GymBuddyRequest[] @relation("SentRequests")
+    receivedBuddyRequests GymBuddyRequest[] @relation("ReceivedRequests")
+    
+    // Friendship system (many-to-many)
+    gymBros GymBroFriendship[] @relation("User1")
+    gymBrosOf GymBroFriendship[] @relation("User2")
 
     memberships UserGym[] //relazione con le iscrizioni in palestra
     workoutPlans WorkoutPlan[]
     createdWorkouts DailyWorkout[] @relation("CreatedWorkouts")
+
+    // Records degli esercizi per ranking
+    exerciseRecords ExerciseRecord[]
 
 
     @@map("users")
@@ -59,10 +74,18 @@ model Gym {
     city String
     description String?
 
+    // Geolocalizzazione per discovery
+    latitude Decimal?
+    longitude Decimal?
+
     createdAt DateTime @default(now())
 
     //relazioni
     members UserGym[]
+    buddyRequests GymBuddyRequest[]
+    exerciseRecords ExerciseRecord[] // Records interni alla palestra
+    gymBroFriendships GymBroFriendship[]
+
 
     @@map("gyms")
 }
@@ -124,6 +147,8 @@ model Exercise {
     muscleGroup String
 
     workoutExercises WorkoutExercise[]
+    exerciseRecords ExerciseRecord[] // Per leaderboard
+
     createdAt DateTime @default(now())
 
     
@@ -154,3 +179,71 @@ model WorkoutExercise {
     @@map("workout_exercises")
 }
 
+// Sistema di richieste GymBro
+model GymBuddyRequest {
+    id Int @id @default(autoincrement())
+    fromUserId Int
+    toUserId Int
+    gymId Int
+    message String?
+    status Status @default(PENDING) // "PENDING", "ACCEPTED", "DECLINED"
+    
+    // Relazioni
+    fromUser User @relation("SentRequests", fields: [fromUserId], references: [id], onDelete: Cascade)
+    toUser User @relation("ReceivedRequests", fields: [toUserId], references: [id], onDelete: Cascade)
+    gym Gym @relation(fields: [gymId], references: [id], onDelete: Cascade)
+    
+    createdAt DateTime @default(now())
+    
+    @@unique([fromUserId, toUserId, gymId]) // Una richiesta per coppia per palestra
+    @@map("gym_buddy_requests")
+}
+
+enum Status {
+    PENDING
+    ACCEPTED
+    DECLINED
+}
+
+// Tabella di amicizia GymBros (bidirezionale)
+model GymBroFriendship {
+    id Int @id @default(autoincrement())
+    user1Id Int
+    user2Id Int
+    gymId Int // In quale palestra sono diventati bros
+    
+    // Relazioni
+    user1 User @relation("User1", fields: [user1Id], references: [id], onDelete: Cascade)
+    user2 User @relation("User2", fields: [user2Id], references: [id], onDelete: Cascade)
+    gym Gym @relation(fields: [gymId], references: [id], onDelete: Cascade)
+    
+    becameFriendsAt DateTime @default(now())
+    
+    // Amicizia unica per palestra
+    @@unique([user1Id, user2Id, gymId])
+    @@map("gym_bro_friendships")
+}
+
+// Records degli esercizi (interni alla palestra), solo PR dell'utente, sia per ranking personale, sia per ranking pubblico nella palestra
+model ExerciseRecord {
+    id Int @id @default(autoincrement())
+    userId Int
+    exerciseId Int
+    gymId Int
+    
+    // Dati del record
+    weight Decimal
+    reps Int
+    notes String?
+    
+    // Tracking
+    recordDate DateTime @default(now())
+    
+    // Relazioni
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    exercise Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+    gym Gym @relation(fields: [gymId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, gymId, exerciseId])
+    @@map("exercise_records")
+}
