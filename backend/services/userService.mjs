@@ -23,7 +23,9 @@ export async function createUser(userData) {
 export async function findUserByEmail(email) {
     try {
         return await prisma.user.findUnique({
-        where: {email}
+        where: {
+                email: {contains: email, mode: 'insensitive'}                
+            }
         })
     }
     catch (error) {
@@ -32,17 +34,67 @@ export async function findUserByEmail(email) {
     }
 }
 
+export async function findUserById(id) {
+    try {
+        return await prisma.user.findUnique({
+        where: {
+                id,
+        }})
+    }
+    catch (error) {
+        logger.error(`User with id - ${id} not found!`);
+        throw new Error(`User not found`);
+    }
+}
+
+// Cerca utenti per nome (parziale, case-insensitive)
+export async function findUsersByName(name) {
+    return prisma.user.findMany({
+        where: {
+            OR: [
+                { firstName: { contains: name, mode: 'insensitive' } },
+                { lastName: { contains: name, mode: 'insensitive' } }
+            ]
+        }
+    });
+}
+
+// Cerca utenti per palestra (tramite UserGym)
+export async function findUsersByGym(gymId) {
+    return prisma.user.findMany({
+        where: {
+            memberships: {
+                some: { gymId }
+            }
+        }
+    });
+}
+
+// Cerca utenti per ruolo
+export async function findUsersByRole(role) {
+    return prisma.user.findMany({
+        where: { role }
+    });
+}
+
+// Cerca utenti pubblici
+export async function findPublicUsers() {
+    return prisma.user.findMany({
+        where: { isPublic: true }
+    });
+}
+
 export async function updateUser(userData) { //posso passare solo i campi da modificare, senza sovrascrivere tutto
     try {
         return await prisma.user.update(
         {
-            where: {email: userData.email},
+            where: {id: userData.id},
             data: userData
         }
         )
     }
     catch(error) {
-        logger.error(`User with email - ${email} not found!`);
+        logger.error(`User with email - ${userData.email} not found!`);
         throw new Error(`User not found`);
     }
 }

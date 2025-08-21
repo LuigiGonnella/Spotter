@@ -40,9 +40,17 @@ model User {
 
     // Records degli esercizi per ranking
     exerciseRecords ExerciseRecord[]
+    recordValidationVotes RecordValidationVote[]
 
 
     @@map("users")
+    LeaderboardRecord LeaderboardRecord[]
+    PrivateMessage PrivateMessage[]
+    privateChatsAsUser1 PrivateChat[] @relation("PrivateChatUser1")
+    privateChatsAsUser2 PrivateChat[] @relation("PrivateChatUser2")
+    GroupMessage GroupMessage[]
+    GroupChatParticipant GroupChatParticipant[]
+    GroupChat GroupChat[]
 }
 
 model RefreshToken {
@@ -85,9 +93,11 @@ model Gym {
     buddyRequests GymBuddyRequest[]
     exerciseRecords ExerciseRecord[] // Records interni alla palestra
     gymBroFriendships GymBroFriendship[]
+    leaderboardRecords LeaderboardRecord[] // Opposite relation for LeaderboardRecord
 
 
     @@map("gyms")
+    GroupChat GroupChat[]
 }
 
 //user-gym
@@ -113,9 +123,6 @@ model DailyWorkout {
     creator User @relation("CreatedWorkouts", fields: [createdBy], references: [id], onDelete: Cascade)
 
     workoutExercises WorkoutExercise[]
-
-
-
 
 }
 
@@ -150,9 +157,11 @@ model Exercise {
     exerciseRecords ExerciseRecord[] // Per leaderboard
 
     createdAt DateTime @default(now())
+    isPublic Boolean @default(false)
 
     
     @@map("exercises")
+    LeaderboardRecord LeaderboardRecord[]
 }
 
 // Tabella di collegamento Exercise <-> DailyWorkout
@@ -238,12 +247,135 @@ model ExerciseRecord {
     
     // Tracking
     recordDate DateTime @default(now())
+    status    RecordStatus @default(UNVERIFIED) // stato base
+
     
     // Relazioni
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
     exercise Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
     gym Gym @relation(fields: [gymId], references: [id], onDelete: Cascade)
 
+    validationVotes RecordValidationVote[] // voti della community, VUOTI se record è OFFICIAL
+
+
     @@unique([userId, gymId, exerciseId])
     @@map("exercise_records")
+    LeaderboardRecord LeaderboardRecord[]
 }
+
+enum RecordStatus {
+  UNVERIFIED   // record privato personale e per classifica libera da validazione
+  OFFICIAL     // validato da admin palestra
+}
+
+// Voti degli utenti sui record
+model RecordValidationVote {
+  id        Int      @id @default(autoincrement())
+  recordId  Int
+  userId    Int
+
+  createdAt DateTime @default(now())
+
+  record ExerciseRecord @relation(fields: [recordId], references: [id], onDelete: Cascade)
+  user   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([recordId, userId]) // un solo voto per utente per record
+}
+
+// Leaderboard ufficiale (scelta dagli admin)
+model LeaderboardRecord {
+  id        Int      @id @default(autoincrement())
+  gymId     Int
+  exerciseId Int
+  recordId  Int      // riferimento al record ufficiale scelto, deve essere sempre "OFFICIAL"
+  createdAt DateTime @default(now())
+  createdBy Int      // admin che ha inserito
+
+  gym      Gym      @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  exercise Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  record   ExerciseRecord @relation(fields: [recordId], references: [id], onDelete: Cascade)
+  admin    User     @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+
+  @@unique([gymId, exerciseId]) // solo un record ufficiale per esercizio per palestra
+  @@map("leaderboard_records")
+}
+
+model PrivateChat {
+  id        Int      @id @default(autoincrement())
+  user1Id   Int
+  user2Id   Int
+  createdAt DateTime @default(now())
+
+  user1 User @relation("PrivateChatUser1", fields: [user1Id], references: [id], onDelete: Cascade)
+  user2 User @relation("PrivateChatUser2", fields: [user2Id], references: [id], onDelete: Cascade)
+  messages PrivateMessage[]
+
+  @@unique([user1Id, user2Id])
+  @@index([user1Id])
+  @@index([user2Id])
+  @@map("private_chats")
+}
+
+model PrivateMessage {
+  id        Int      @id @default(autoincrement())
+  chatId    Int
+  senderId  Int
+  content   String
+  sentAt    DateTime @default(now())
+  read      Boolean  @default(false)
+
+  chat   PrivateChat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  sender User        @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([chatId, sentAt]) // query veloce dei messaggi recenti, sfruttata in automatico da prisma
+  @@index([senderId])
+  @@map("private_messages")
+}
+
+model GroupChat {
+  id        Int      @id @default(autoincrement())
+  name      String
+  gymId     Int?     
+  createdBy Int
+  createdAt DateTime @default(now())
+
+  creator User        @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  gym     Gym?        @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  participants GroupChatParticipant[]
+  messages GroupMessage[]
+
+  @@index([gymId])
+  @@map("group_chats")
+}
+
+model GroupChatParticipant {
+  id         Int      @id @default(autoincrement())
+  chatId     Int
+  userId     Int
+  joinedAt   DateTime @default(now())
+  isAdmin    Boolean  @default(false)
+
+  chat GroupChat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([chatId, userId])
+  @@index([userId])      // per trovare velocemente tutte le chat di un utente
+  @@map("group_chat_participants")
+}
+
+model GroupMessage {
+  id        Int      @id @default(autoincrement())
+  chatId    Int
+  senderId  Int
+  content   String
+  sentAt    DateTime @default(now())
+  readBy    Json?    // array di userId che hanno letto il messaggio
+
+  chat   GroupChat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  sender User      @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([chatId, sentAt]) // messaggi recenti per chat
+  @@index([senderId])
+  @@map("group_messages")
+}
+
