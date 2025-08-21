@@ -1,4 +1,8 @@
 //HANDLING OF ENVIRONMENT VARIABLES
+import dotenv from 'dotenv';
+const envFile = process.env.NODE_ENV === 'production'? '.env.production' : '.env.development';
+dotenv.config({path: envFile});
+
 const PORT = process.env.PORT;
 
 const DATABASE_URL = process.env.DATABASE_URL;
@@ -21,4 +25,6 @@ const CORS_ORIGIN = process.env.CORS_ORIGIN;
 
 const NODE_ENV = process.env.NODE_ENV;
 
-export {PORT, DATABASE_URL, COOKIE_DOMAIN, COOKIE_SECURE, CORS_ORIGIN, NODE_ENV, ACCESS_TOKEN_EXP, REFRESH_TOKEN_EXP, JWT_ACCESS_SECRET, JWT_REFRESH_SECRET, REDIS_URL};
+const CHAT_SECRET = process.env.CHAT_SECRET;
+
+export {CHAT_SECRET, PORT, DATABASE_URL, COOKIE_DOMAIN, COOKIE_SECURE, CORS_ORIGIN, NODE_ENV, ACCESS_TOKEN_EXP, REFRESH_TOKEN_EXP, JWT_ACCESS_SECRET, JWT_REFRESH_SECRET, REDIS_URL};

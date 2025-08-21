@@ -51,6 +51,7 @@ model User {
     GroupMessage GroupMessage[]
     GroupChatParticipant GroupChatParticipant[]
     GroupChat GroupChat[]
+    Notification Notification[]
 }
 
 model RefreshToken {
@@ -379,3 +380,24 @@ model GroupMessage {
   @@map("group_messages")
 }
 
+enum NotificationType {
+  PRIVATE_MESSAGE
+  GROUP_MESSAGE
+  FRIEND_REQUEST
+  FRIEND_ACCEPTED
+  LEADERBOARD_UPDATE
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  type      NotificationType
+  payload   Json     // metadati sicuri (es: chatId, senderId, messageId, preview opzionale lato client)
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read, createdAt])
+  @@map("notifications")
+}

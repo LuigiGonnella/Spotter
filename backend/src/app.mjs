@@ -1,12 +1,10 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import dotenv from 'dotenv';
-import { CORS_ORIGIN } from '../utils/config.mjs';
+import { CORS_ORIGIN, PORT } from '../utils/config.mjs';
 
 
-const envFile = process.env.NODE_ENV === 'productiion'? '.env.production' : '.env.development';
-dotenv.config({path: envFile});
+
 
 const app = express();
 app.use(express.json());
@@ -20,12 +18,17 @@ res.cookie('refreshToken', refreshToken, {
 */
 app.use(cors(
     {origin: CORS_ORIGIN,
-    credentials: true
+    credentials: true //richiede che il front-end faccia richieste con withCredentials: true
     }
 ));
 
 //healthcheck
 
 app.get('/health', (req, res) => res.json({ok: true}));
+
+app.listen(PORT, () => {
+  console.log(`Server running at: http://localhost:${PORT}`);
+});
+
 
 export default app;
