@@ -9,9 +9,9 @@
 
 ### ✅ **Core Infrastructure**
 - [x] Setup progetto (Backend + Frontend structure)
-- [ ] **Auth System** → Register/Login/JWT con role-based authentication
+- [x] **Auth System** → Register/Login/JWT con role-based authentication
 - [ ] **User Profiles** → Basic info + ruoli (`USER` / `GYM_ADMIN`)
-- [ ] **Database Schema** → User, Gym, UserGym (membership)
+- [x] **Database Schema** → User, Gym, UserGym (membership)
 - [x] **Environment Setup** → Development/Production configs
 
 ### 🎯 **MVP Goal Fase 1**
@@ -131,4 +131,4 @@
 
 ---
 
-**🎯 Current Focus**: Fase 1 - Auth System &
+**🎯 Current Focus**: Fase 1 
