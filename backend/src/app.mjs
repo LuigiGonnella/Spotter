@@ -2,6 +2,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { CORS_ORIGIN, PORT } from '../utils/config.mjs';
+import { errorHandler } from '../middlewares/errorHandler.mjs';
 
 
 
@@ -29,6 +30,8 @@ app.get('/health', (req, res) => res.json({ok: true}));
 app.listen(PORT, () => {
   console.log(`Server running at: http://localhost:${PORT}`);
 });
+
+app.use(errorHandler);
 
 
 export default app;

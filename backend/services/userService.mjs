@@ -1,22 +1,19 @@
 import prisma from '../utils/prismaClient.mjs';
-import {hashPassword} from '../utils/hash.mjs';
 import logger from '../utils/logger.mjs'
 
 export async function createUser(userData) {
+    let user;
     if (userData.password) {
-        userData.passwordHash = await hashPassword(userData.password);
-
-        delete userData.password;
+        user = await prisma.user.create({
+        data: userData
+        });
     }
     else {
         logger.error("Password not found!");
         throw new Error("Password not found");
     }
 
-    const user = await prisma.user.create({
-        data: userData
-    });
-
+    
     return user;
 }
 

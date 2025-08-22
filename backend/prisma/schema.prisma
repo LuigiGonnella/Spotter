@@ -1,3 +1,13 @@
+/*
+✅ Riassunto N:N
+
+User <-> Gym (admin)
+
+User <-> User (amicizie GymBro)
+
+User <-> GroupChat (partecipanti)
+
+Exercise <-> DailyWorkout (WorkoutExercise)*/
 generator client {
     provider = "prisma-client-js"
 }
@@ -12,6 +22,7 @@ model User {
     email String @unique
     passwordHash String? //opzionale per utenti OAuth
     role Role @default(USER)
+    status_admin Status?
     provider String?
     providerId String?
     createdAt DateTime @default(now())
@@ -25,6 +36,8 @@ model User {
     profileImage String? //URL
 
     isPublic Boolean @default(false)
+
+
 
     //sistema GymBros
     sentBuddyRequests GymBuddyRequest[] @relation("SentRequests")
@@ -52,6 +65,7 @@ model User {
     GroupChatParticipant GroupChatParticipant[]
     GroupChat GroupChat[]
     Notification Notification[]
+    Gym Gym[] @relation("GymAdmins")
 }
 
 model RefreshToken {
@@ -82,12 +96,18 @@ model Gym {
     address String
     city String
     description String?
+    email     String?
+    verified  Boolean  @default(false) // palestra non attiva finché non verificata
+
 
     // Geolocalizzazione per discovery
     latitude Decimal?
     longitude Decimal?
 
     createdAt DateTime @default(now())
+
+    admins    User[] @relation("GymAdmins")
+
 
     //relazioni
     members UserGym[]
@@ -96,7 +116,7 @@ model Gym {
     gymBroFriendships GymBroFriendship[]
     leaderboardRecords LeaderboardRecord[] // Opposite relation for LeaderboardRecord
 
-
+    @@unique([name])
     @@map("gyms")
     GroupChat GroupChat[]
 }

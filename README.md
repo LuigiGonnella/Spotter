@@ -22,3 +22,5 @@ Un utente si registra in una palestra, dichiarando di appartenere ad essa, senza
 ## 🎯 Why Spotter?
 Today, many people at the gym just exchange a nod. Spotter wants to close this gap, making socialization easier and turning the gym into an active, motivating, and fun community.
 
+//registrazione classica con mail e password alla route /register, poi ci sarà una route dedicata per Oauth, con rispetivo controller. Ci sarà anche una route apposita per completare il profilo (/profile) con corrispondente controller. Ci sarà anche una route per la registrazione di una palestra, con controller dedicato (role:GYM_ADMIN) 
+//! facciamo che per il mio MVP verifico a mano le palestre che mi inviano i documenti, più avanti metto sistemi di verifica automatizzati con API specifiche. Quindi ora aggiungo a gym un relazione con più admin (ownerIds Int[]) e un campo verified (finchè è false di fatto non può fare nulla, così come l'admin/gli admin), mentre in user aggiungo gymsOwned Gym[], dove ci sono le gym di cui è admin.
