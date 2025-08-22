@@ -96,4 +96,62 @@ export async function updateUser(userData) { //posso passare solo i campi da mod
     }
 }
 
+// ========================================
+// GESTIONE PALESTRE DELL'UTENTE
+// ========================================
+
+export async function getUserGymMemberships(userId) {
+    try {
+        const memberships = await prisma.userGym.findMany({
+            where: { userId: parseInt(userId) },
+            include: {
+                gym: {
+                    select: {
+                        id: true,
+                        name: true,
+                        city: true,
+                        verified: true,
+                        address: true,
+                        description: true
+                    }
+                }
+            },
+            orderBy: { joinedAt: 'desc' }
+        });
+
+        return memberships;
+    } catch (error) {
+        logger.error(`Error getting gym memberships for user ${userId}: ${error.message}`);
+        throw new Error(`Failed to get user gym memberships: ${error.message}`);
+    }
+}
+
+
+
+
+
+export async function getUserGymHistory(userId) {
+    try {
+        const gymHistory = await prisma.userGym.findMany({
+            where: { userId: parseInt(userId) },
+            include: {
+                gym: {
+                    select: {
+                        id: true,
+                        name: true,
+                        city: true,
+                        verified: true
+                    }
+                }
+            },
+            orderBy: { joinedAt: 'desc' }
+        });
+
+        return gymHistory;
+    } catch (error) {
+        logger.error(`Error getting gym history for user ${userId}: ${error.message}`);
+        throw new Error(`Failed to get user gym history: ${error.message}`);
+    }
+}
+
 

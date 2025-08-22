@@ -131,6 +131,8 @@ model UserGym {
 
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
     gym Gym @relation(fields: [gymId], references: [id], onDelete: Cascade)
+    
+    @@unique([userId, gymId])
 }
 
 model DailyWorkout { 
@@ -151,7 +153,7 @@ model WorkoutPlan {//utente crea una sua scheda e può renderla pubblica. Può a
     id Int @id @default(autoincrement())
     name String 
     description String?
-    isPublic Boolean  @default(false)
+    isPublic Boolean  @default(false)//possiamo mostrare tutto lo storico delle schede pubbliche
 
     weekSchedule Json // { "monday": 1, "tuesday": null, "wednesday": 2, etc. }
 
@@ -160,7 +162,6 @@ model WorkoutPlan {//utente crea una sua scheda e può renderla pubblica. Può a
     userId Int
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
     
-    isActive Boolean @default(true) //possiamo mostrare tutto lo storico delle schede pubbliche
     createdAt DateTime @default(now())
     likes Int @default(0) //mi piace degli utenti
 
