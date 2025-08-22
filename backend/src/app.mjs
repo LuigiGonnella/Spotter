@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { CORS_ORIGIN, PORT } from '../utils/config.mjs';
 import authRoutes from '../routes/authRoutes.mjs';
+import userRoutes from '../routes/userRoutes.mjs';
 import { errorHandler } from '../middlewares/errorHandler.mjs';
 
 
@@ -25,6 +26,9 @@ app.use(cors(
 ));
 
 app.use('/api/auth', authRoutes);
+
+app.use('/api/user', userRoutes);
+
 
 //healthcheck
 

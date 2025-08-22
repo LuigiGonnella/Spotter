@@ -1,6 +1,5 @@
-import logger from '../logger.js';
-import { updateUser } from '../services/userService.mjs';
-
+import { updateUser, findUserById } from '../services/userService.mjs';
+import logger from '../utils/logger.mjs';
 /**
  * Aggiorna il profilo dell'utente
  * Campi opzionali: firstName, lastName, dateOfBirth, bio, profileImage, isPublic
@@ -38,5 +37,38 @@ export async function updateProfile(req, res, next) {
   } catch (err) {
     logger.error({ err }, 'Error updating profile');
     next(err);
+  }
+}
+
+export async function getProfile(req, res, next) {
+  const userId = req.user.id;
+  try {
+    const user = await findUserById(userId);
+
+    if (!user) {
+      logger.error('User not found');
+      let e = new Error('User not found');
+      e.status = 404;
+      return next(e);
+    }
+
+    const safeUser = {
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      bio: user.bio,
+      profileImage: user.profileImage,
+      role: user.role,
+      isPublic: user.isPublic,
+      createdAt: user.createdAt
+    };
+
+    res.json(safeUser);
+
+    
+  } catch (error) {
+    logger.error(`Error processing profile data - ${error.message}`);
+    next(error);
   }
 }
