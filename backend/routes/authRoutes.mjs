@@ -1,11 +1,11 @@
 import express from 'express';
-import { rateLimitMiddleware } from '../middlewares/rateLimiter.js';
+import {rateLimitMiddleware} from '../middlewares/rateLimiter.mjs';
 import {
   registerValidator,
   loginValidator,
   googleOAuthValidator,
   registerGymValidator
-} from '../middlewares/auth.js';
+} from '../middlewares/auth.mjs';
 import {
   register,
   login,
@@ -13,7 +13,7 @@ import {
   logout,
   googleOAuth,
   registerGym
-} from '../controllers/authController.js';
+} from '../controllers/authController.mjs';
 
 const router = express.Router();
 

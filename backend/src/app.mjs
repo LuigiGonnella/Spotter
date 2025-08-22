@@ -2,6 +2,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { CORS_ORIGIN, PORT } from '../utils/config.mjs';
+import authRoutes from '../routes/authRoutes.mjs';
 import { errorHandler } from '../middlewares/errorHandler.mjs';
 
 
@@ -22,6 +23,8 @@ app.use(cors(
     credentials: true //richiede che il front-end faccia richieste con withCredentials: true
     }
 ));
+
+app.use('/api/auth', authRoutes);
 
 //healthcheck
 

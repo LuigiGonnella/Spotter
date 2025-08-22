@@ -2,8 +2,8 @@ import ms from 'ms';
 import prisma from '../utils/prismaClient.mjs';
 import logger from '../utils/logger.mjs';
 import {OAuth2Client} from 'google-auth-library';
-import { hashPassword, verifyPassword, hashToken, verifyTokenHash } from '../utils/hash.js';
-import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils/tokens.js';
+import { hashPassword, verifyPassword, hashToken, verifyToken } from '../utils/hash.mjs';
+import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils/token.mjs';
 import {GOOGLE_CLIENT_ID, COOKIE_SECURE, COOKIE_DOMAIN, REFRESH_TOKEN_EXP} from '../utils/config.mjs'
 import {findUserByEmail, createUser, updateUser, findUserById} from '../services/userService.mjs';
 import { createRefreshToken, findTokenById, updateToken } from '../services/authService.mjs';
@@ -185,7 +185,7 @@ export async function refresh(req, res) {
   const stored = await findTokenById(payload.jti);
   if (!stored || stored.revoked) return res.status(401).json({ error: 'Token revoked' });
 
-  const match = await verifyTokenHash(stored.tokenHash, token);
+  const match = await verifyToken(stored.tokenHash, token);
   if (!match) return res.status(401).json({ error: 'Token mismatch' });
 
   await updateToken({ jti:payload.jti, revoked:true });

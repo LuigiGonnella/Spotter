@@ -1,4 +1,4 @@
-import {RateLimiterRedis} from 'rate-limiter-flecible';
+import {RateLimiterRedis} from 'rate-limiter-flexible';
 import redis from '../utils/redisClient.mjs';
 
 const rateLimiter = new RateLimiterRedis({
@@ -8,7 +8,7 @@ const rateLimiter = new RateLimiterRedis({
     blockDuration: 900, //se supera il limite, viene bloccato per 5 minuti
 })
 
-export async function rateLimiterMiddleware(req, res, next) {
+export async function rateLimitMiddleware(req, res, next) {
     try {
         await rateLimiter.consume(req.ip);
         next();
@@ -17,3 +17,4 @@ export async function rateLimiterMiddleware(req, res, next) {
         res.status(429).json({error: 'Too many requests, please try again later.'})
     }
 }
+

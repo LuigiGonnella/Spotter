@@ -1,6 +1,6 @@
 import { verifyAccessToken } from "../utils/token.mjs";
 import {body, validationResult} from 'express-validator';
-import {logger} from '../utils/logger.mjs';
+import logger from '../utils/logger.mjs';
 
 //AGGIUNGERE MIDDLEWARES per controllo campi PROFILO UTENTE, ECC...
 export function requireAuth(req, res, next) { //ogni route protetta richiede che sia acceduta con header "Authorization: Bearer <token>" con l'accessToken
