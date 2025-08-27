@@ -16,61 +16,109 @@ function LoginForm(props) {
             await props.handleAuth("login", data);
             return { success: true };
         } catch (error) {
-            return { error: 'Login failed. Check your credentials.' };
+            return { error: 'Login failed. Please check your credentials and try again.' };
         }
     }    
     
     return (
-        <Row className="justify-content-center align-items-center min-vh-100"> {/*centra il form verticalmente e orizzontalmente*/}
-            <Col md={6} lg={4}>
-                { isPending && <Alert variant="warning">Please, wait for the server's response...</Alert> }
-                <Card className="border-2 border-dark">
-                    <Card.Header className="text-center">
-                        <h3>
-                            <i className="bi bi-person-circle me-2"></i> {/*icona con persona */}
-                            Login
-                        </h3>
-                    </Card.Header>
-                    <Card.Body>
-                        <Form action={formAction}> {/*dati del formi inviati alla variabile di stato*/}
-                            <Form.Group controlId='email' className='mb-3'>
-                                <Form.Label>Email</Form.Label>
-                                <Form.Control type='email' name='email' required /> {/*name deve essere uguale a controlId*/}
-                            </Form.Group>
-
-                            <Form.Group controlId='password' className='mb-3'>
-                                <Form.Label>Password</Form.Label>
-                                <Form.Control type='password' name='password' required minLength={6} />
-                            </Form.Group>
-
-                            {state.error && <p className="text-danger">{state.error}</p>}
-
-                            <div className="d-grid gap-2">
-                                <Button type='submit' disabled={isPending} variant="primary">
-                                    <i className="bi bi-box-arrow-in-right me-1"></i>
-                                    Login
-                                </Button>
-                                <Link className='btn btn-outline-secondary' to={'/'} disabled={isPending}>
-                                    <i className="bi bi-arrow-left me-1"></i>
-                                    Annulla
-                                </Link>
+        <div className="min-vh-100 d-flex align-items-center justify-content-center" style={{backgroundColor: '#212529'}}>
+            <Row className="w-100 justify-content-center">
+                <Col md={6} lg={5} xl={4}>
+                    { isPending && (
+                        <Alert variant="warning" className="text-center fw-semibold shadow-sm">
+                            <i className="bi bi-hourglass-split me-2"></i>
+                            Connecting to Spotter...
+                        </Alert> 
+                    )}
+                    <Card className="shadow-lg border-0" style={{backgroundColor: '#ffffff'}}>
+                        <Card.Header className="text-center py-4" style={{backgroundColor: '#000000', color: '#ffffff'}}>
+                            <div className="mb-2">
+                                <i className="bi bi-trophy-fill fs-1 text-warning"></i>
                             </div>
-                        </Form>
-                    </Card.Body>
-                    <Card.Footer className="text-center text-muted">                            
-                         <small>
-                            you don't have an account yet? 
-                        </small>
-                        <Button variant="link" onClick={() => props.setAuthType("register")}>
-                            Register
-                        </Button>
-                        
-                    </Card.Footer>
-                </Card>
-            </Col>
-        </Row>
-    );
+                            <h2 className="fw-bold mb-0">
+                                Welcome Back to Spotter
+                            </h2>
+                            <p className="mb-0 text-light opacity-75">Sign in to your fitness community</p>
+                        </Card.Header>
+                        <Card.Body className="p-4">
+                            <Form action={formAction}>
+                                <Form.Group controlId='email' className='mb-4'>
+                                    <Form.Label className="fw-semibold text-dark">
+                                        <i className="bi bi-envelope me-2"></i>
+                                        Email Address
+                                    </Form.Label>
+                                    <Form.Control 
+                                        type='email' 
+                                        name='email' 
+                                        required 
+                                        className="py-3 border-2"
+                                        placeholder="Enter your email"
+                                        style={{borderColor: '#dee2e6'}}
+                                    />
+                                </Form.Group>
 
+                                <Form.Group controlId='password' className='mb-4'>
+                                    <Form.Label className="fw-semibold text-dark">
+                                        <i className="bi bi-lock me-2"></i>
+                                        Password
+                                    </Form.Label>
+                                    <Form.Control 
+                                        type='password' 
+                                        name='password' 
+                                        required 
+                                        minLength={6} 
+                                        className="py-3 border-2"
+                                        placeholder="Enter your password"
+                                        style={{borderColor: '#dee2e6'}}
+                                    />
+                                </Form.Group>
+
+                                {state.error && (
+                                    <Alert variant="danger" className="fw-semibold">
+                                        <i className="bi bi-exclamation-triangle me-2"></i>
+                                        {state.error}
+                                    </Alert>
+                                )}
+
+                                <div className="d-grid gap-3">
+                                    <Button 
+                                        type='submit' 
+                                        disabled={isPending} 
+                                        className="py-3 fw-bold fs-5"
+                                        style={{backgroundColor: '#000000', borderColor: '#000000'}}
+                                    >
+                                        <i className="bi bi-box-arrow-in-right me-2"></i>
+                                        Sign In to Spotter
+                                    </Button>
+                                    <Link 
+                                        className='btn btn-outline-dark py-3 fw-semibold' 
+                                        to={'/'} 
+                                        disabled={isPending}
+                                    >
+                                        <i className="bi bi-arrow-left me-2"></i>
+                                        Back to Home
+                                    </Link>
+                                </div>
+                            </Form>
+                        </Card.Body>
+                        <Card.Footer className="text-center py-4" style={{backgroundColor: '#f8f9fa'}}>                            
+                            <p className="mb-2 text-muted">
+                                New to the Spotter community?
+                            </p>
+                            <Button 
+                                variant="warning" 
+                                className="fw-bold px-4 py-2"
+                                onClick={() => props.setAuthType("register")}
+                            >
+                                <i className="bi bi-person-plus me-2"></i>
+                                Create Your Account
+                            </Button>
+                        </Card.Footer>
+                    </Card>
+                </Col>
+            </Row>
+        </div>
+    );
 }
 
 export default LoginForm;
