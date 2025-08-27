@@ -1,0 +1,6 @@
+### Profile
+GET http://localhost:4000/api/user/profile
+content-type: application/json
+Authorization: 'Bearer null"
+
+

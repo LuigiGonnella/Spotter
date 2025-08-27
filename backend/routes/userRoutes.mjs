@@ -5,6 +5,6 @@ import { getProfile } from '../controllers/userController.mjs';
 
 const router = express.Router();
 
-router.get('/profile', requireAuth , rateLimitMiddleware, getProfile);
+router.get('/profile', requireAuth , getProfile); //TODO ratelimitermiddleware
 
 export default router;

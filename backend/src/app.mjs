@@ -1,12 +1,10 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import { CORS_ORIGIN, PORT } from '../utils/config.mjs';
+import { BASE_URL, CORS_ORIGIN, PORT } from '../utils/config.mjs';
 import authRoutes from '../routes/authRoutes.mjs';
 import userRoutes from '../routes/userRoutes.mjs';
 import { errorHandler } from '../middlewares/errorHandler.mjs';
-
-
 
 
 const app = express();
@@ -24,6 +22,7 @@ app.use(cors(
     credentials: true //richiede che il front-end faccia richieste con withCredentials: true
     }
 ));
+app.use('/uploads', express.static('backend/uploads'));
 
 app.use('/api/auth', authRoutes);
 
@@ -35,7 +34,7 @@ app.use('/api/user', userRoutes);
 app.get('/health', (req, res) => res.json({ok: true}));
 
 app.listen(PORT, () => {
-  console.log(`Server running at: http://localhost:${PORT}`);
+  console.log(`Server running at: ${BASE_URL}`);
 });
 
 app.use(errorHandler);

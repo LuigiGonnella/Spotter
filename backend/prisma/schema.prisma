@@ -1,13 +1,8 @@
-/*
-✅ Riassunto N:N
-
-User <-> Gym (admin)
-
-User <-> User (amicizie GymBro)
-
-User <-> GroupChat (partecipanti)
-
-Exercise <-> DailyWorkout (WorkoutExercise)*/
+// ✅ Riassunto N:N
+// User <-> Gym (admin)
+// User <-> User (amicizie GymBro)
+// User <-> GroupChat (partecipanti)
+// Exercise <-> DailyWorkout (WorkoutExercise)
 generator client {
     provider = "prisma-client-js"
 }

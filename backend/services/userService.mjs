@@ -3,14 +3,25 @@ import logger from '../utils/logger.mjs'
 
 export async function createUser(userData) {
     let user;
-    if (userData.password) {
-        user = await prisma.user.create({
-        data: userData
-        });
-    }
-    else {
-        logger.error("Password not found!");
-        throw new Error("Password not found");
+    try {
+        if (userData.passwordHash) {
+                user = await prisma.user.create({
+                data: userData
+                });
+            }
+            else {
+                logger.error("Password not found!");
+                throw new Error("Password not found");
+                
+            }
+    
+    } 
+    catch (error) {
+        if (error.code === 'P2002') {
+        // Unique constraint failed
+        throw new Error('Email already registered');
+        }
+                
     }
 
     
@@ -21,13 +32,12 @@ export async function findUserByEmail(email) {
     try {
         return await prisma.user.findUnique({
         where: {
-                email: {contains: email, mode: 'insensitive'}                
+                email               
             }
         })
     }
     catch (error) {
-        logger.error(`User with email - ${email} not found!`);
-        throw new Error(`User not found`);
+        return null;
     }
 }
 

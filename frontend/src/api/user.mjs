@@ -21,18 +21,18 @@ const handleApiResponse = async (response) => {
             : errorData.error || 'Validation error';
           break;
         case 401:
-          errorMessage = 'Authentication required. Please log in.';
+          errorMessage = errorData.error || 'Authentication required. Please log in.';
           break;
         case 403:
-          errorMessage = 'Access denied. You do not have permission for this action.';
+          errorMessage = errorData.error || 'Access denied. You do not have permission for this action.';
           break;
         case 404:
-          errorMessage = 'Resource not found.';
+          errorMessage = errorData.error || 'Resource not found.';
           break;
         case 409:
           errorMessage = errorData.error || 'Conflict error.';        break;
         case 500:
-          errorMessage = 'Internal server error. Please try again later.';
+          errorMessage = errorData.error ||'Internal server error. Please try again later.';
           break;
         case 503:
           errorMessage = errorData.error || 'Service temporarily unavailable.';
@@ -49,17 +49,104 @@ const handleApiResponse = async (response) => {
     }
     
     throw errorMessage;
-  };
+};
 
-export async function getUserInfo() {
+async function ProtectedRoute(url, options = {}) {
+
+  let res = await fetch(url, options);
+  if (res.status === 401) {
+    const refresh = await fetch(NEXT_PUBLIC_API_URL+'/api/auth/refresh', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include' //inviamo refresh token
+    });
+
+    if (refresh.ok) {
+      const refreshData = await refresh.json();
+      localStorage.setItem('accessToken', refreshData.accessToken);
+
+  
+
+      options.headers['Authorization'] = `Bearer ${refreshData.accessToken}`;
+      ;
+      res = await fetch(url, options); //riprovo stessa route
+    }
+    else {
+      logger.error("refresh error")
+      localStorage.removeItem('accessToken');
+      throw "Access to protected route denied";
+    }
+
+  }
+  return handleApiResponse(res);
+
+}
+
+export async function getUserInfo() { //credentials: include serve solo se stiamo inviando qualcosa via cookie (sessione ecc..)
     const accessToken = localStorage.getItem('accessToken');
 
-    const res = await fetch(NEXT_PUBLIC_API_URL+'/api/user/profile', {
+    return ProtectedRoute(NEXT_PUBLIC_API_URL+'/api/user/profile', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json'
-        }
+        },
+        credentials: 'include'
     });
+}
+
+export async function register(data) { /*const { email, password, firstName, lastName, dateOfBirth, bio, isPublic } = req.body;*/
+
+  if (data.has('dateOfBirth')) {
+    const value = data.get('dateOfBirth');
+    data.set('dateOfBirth', new Date(value).toISOString());
+  }
+  const res = await fetch(NEXT_PUBLIC_API_URL+'/api/auth/register', {
+        method: 'POST',
+        body: data, //non è json, ha un fle (immagine profilo) che si salva in req.file
+    });
+
+    /*
+    1)Il form nel frontend (es. RegisterForm.jsx) raccoglie i dati dell’utente, compreso il file immagine.
+  
+    2) Quando l’utente invia il form, tu crei un oggetto FormData con tutti i dati e il file.
+
+    3) Chiami handleAuth("register", data) passando il FormData.
+
+    4) handleAuth chiama la funzione register(data) che fa una richiesta fetch con il FormData come body.
+    5)Nel backend, la route /api/auth/register usa il middleware multer (upload.single('profileImage')).
+
+    6)Multer estrae il file dal FormData e lo salva nella cartella uploads/, mettendo i dati del file in req.file e i dati testuali in req.body.
+ */
+
+    return handleApiResponse(res);
+}
+
+export async function logIn(email, password) {
+  const res = await fetch(NEXT_PUBLIC_API_URL+'/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({
+          'email': `${email}`,
+          'password': `${password}`
+        }),
+        headers: {
+            'Content-Type': 'application/json' //se invio dati formato json nel body
+        },
+    });
+
+    return handleApiResponse(res);
+}
+
+export async function logOut() {
+  const res = await fetch(NEXT_PUBLIC_API_URL+'/api/auth/logout', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json' //se invio dati formato json nel body
+        },
+        credentials: 'include' //invio refreshToken da revocare
+    });
+
     return handleApiResponse(res);
 }

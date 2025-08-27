@@ -14,15 +14,17 @@ import {
   googleOAuth,
   registerGym
 } from '../controllers/authController.mjs';
+import multer from 'multer';
+const upload = multer({ dest: 'uploads/' }); // oppure configura storage
 
 const router = express.Router();
 
-router.post('/register', rateLimitMiddleware, registerValidator, register);
-router.post('/registerGym', rateLimitMiddleware, registerGymValidator, registerGym);
+router.post('/register', upload.single('profileImage'), registerValidator, register); //TODO ratelimitermiddleware
+router.post('/registerGym', registerGymValidator, registerGym); //TODO ratelimitermiddleware
 
-router.post('/login',    rateLimitMiddleware, loginValidator,  login);
-router.post('/refresh',  rateLimitMiddleware, refresh);
-router.post('/logout',   rateLimitMiddleware, logout);
-router.post('/oauth/google', rateLimitMiddleware, googleOAuthValidator, googleOAuth);
+router.post('/login',  loginValidator,  login); //TODO ratelimitermiddleware
+router.post('/refresh', refresh); //TODO ratelimitermiddleware
+router.delete('/logout', logout); //in REST logout è delete (token/sessione eliminata) //TODO ratelimitermiddleware
+router.post('/oauth/google', googleOAuthValidator, googleOAuth); //TODO ratelimitermiddleware
 
 export default router;

@@ -15,7 +15,7 @@ function cookieOptions(maxAge) {
     return {
         httpOnly: true,
         secure: COOKIE_SECURE==='true',
-        samSite: 'None', //frontend e backend su domini diversi
+        sameSite: 'None', // frontend e backend su domini diversi mettere None in production
         domain: COOKIE_DOMAIN==='localhost' ? undefined : COOKIE_DOMAIN,
         path:'/',
         maxAge,
@@ -25,11 +25,18 @@ function cookieOptions(maxAge) {
 export async function register(req, res, next) { //registrazione classica con mail e password alla route /register, poi ci sarà una route dedicata per Oauth, con rispetivo controller. Ci sarà anche una route apposita per completare il profilo (/profile) con corrispondente controller. Ci sarà anche una route per la registrazione di una palestra, con controller dedicato (role:GYM_ADMIN) 
 //! facciamo che per il mio MVP verifico a mano le palestre che mi inviano i documenti, più avanti metto sistemi di verifica automatizzati con API specifiche. Quindi ora aggiungo a gym un relazione con più admin (admins User[]) e un campo verified (finchè è false di fatto non può fare nulla, così come l'admin/gli admin), mentre in user aggiungo Gym Gym[], dove ci sono le gym di cui è admin.
     try {
-        const { email, password, firstName, lastName, dateOfBirth, bio, profileImage, isPublic } = req.body;
-        const userData = { email, passwordHash, firstName, lastName, dateOfBirth, bio, profileImage, isPublic};
+        const { email, password, firstName, lastName, dateOfBirth, bio } = req.body;
+        const profileImage = req.file ? req.file.filename : null; // file è in req.file e non body
+
         const existing = await findUserByEmail(email);
-        if (existing) return res.status(400).json({ error: 'Email already registered' });
+        if (existing) {
+            logger.error('Email already registered');
+            return res.status(400).json({ error: 'Email already registered' });
+
+        }
         const passwordHash = await hashPassword(password);
+        const isPublic = req.body.isPublic === 'true';
+        const userData = { email, passwordHash, firstName, lastName, dateOfBirth, bio, profileImage, isPublic};
         const user = await createUser(userData);
         res.status(201).json({ id: user.id, email: user.email });
         
@@ -109,10 +116,10 @@ export async function googleOAuth(req, res, next) {
             
         const email = payload.email;
         const providerId = payload.sub;
-        let user = findUserByEmail(email);
+        let user = await findUserByEmail(email);
 
         if (!user) { //se primo accesso
-            user = createUser({email, provider: 'google', providerId});
+            user = await createUser({email, provider: 'google', providerId});
 
         }
         else { //se la mail era già stata registrata tradizionalmente e l'utente ancora non è stato collegato a google
@@ -122,10 +129,10 @@ export async function googleOAuth(req, res, next) {
         }
         const { token: accessToken } = generateAccessToken({ userId: user.id, email: user.email, role: user.role });
         const { token: refreshToken, jti } = generateRefreshToken({ userId: user.id });
-        const refreshHash = await hashToken(refreshToken);
+        const tokenHash = await hashToken(refreshToken);
         const expiresAt = new Date(Date.now() + ms(REFRESH_TOKEN_EXP));
 
-         const tokenJS = createRefreshToken({ jti, refreshHash, userId: user.id, expiresAt });
+         const tokenJS = await createRefreshToken({ jti, tokenHash, userId: user.id, expiresAt });
 
         res.cookie('refreshToken', refreshToken, cookieOptions(expiresAt.getTime() - Date.now()));
         res.json({ accessToken });
@@ -140,7 +147,7 @@ export async function googleOAuth(req, res, next) {
 export async function login(req, res, next) {
     try {
         const {email, password} = req.body;
-        const user = findUserByEmail(email);
+        const user = await findUserByEmail(email);
         if (!user || !user.passwordHash) {
             logger.error(`Login failed: User not found or OAuth-only - ${email}`);
             const e = new Error('Invalid credentials');
@@ -158,12 +165,20 @@ export async function login(req, res, next) {
 
         const {token: accessToken} = generateAccessToken({userId:user.id, email:user.email, role:user.role});
         const { token: refreshToken, jti } = generateRefreshToken({ userId: user.id });
-        const refreshHash = await hashToken(refreshToken);
+        const tokenHash = await hashToken(refreshToken);
         const expiresAt = new Date(Date.now() + ms(REFRESH_TOKEN_EXP));
-        const tokenJS = createRefreshToken({ jti, refreshHash, userId: user.id, expiresAt });
+        const tokenJS = await createRefreshToken({ jti, tokenHash , userId: user.id, expiresAt });
 
         res.cookie('refreshToken', refreshToken, cookieOptions(expiresAt.getTime()-Date.now()));
-        res.json({accessToken});
+        res.json({accessToken, id: user.id,
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                bio: user.bio,
+                profileImage: user.profileImage,
+                role: user.role,
+                isPublic: user.isPublic,
+                createdAt: user.createdAt});
     }
     catch(err) {
         logger.error({ err }, 'Unexpected error during login');
