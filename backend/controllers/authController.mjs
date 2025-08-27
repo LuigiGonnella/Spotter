@@ -155,7 +155,8 @@ export async function login(req, res, next) {
             next(e);
         }
         const passwordHash = user.passwordHash;
-        const ok = verifyPassword(password, passwordHash);
+        
+        const ok = await verifyPassword(password, passwordHash);
         if (!ok) {
             logger.error(`Login failed: password or email wrong`);
             const e = new Error('Invalid credentials');
@@ -192,7 +193,7 @@ export async function refresh(req, res) {
 
   let payload;
   try {
-    payload = verifyRefreshToken(token);
+    payload = await verifyRefreshToken(token);
   } catch {
     return res.status(401).json({ error: 'Invalid refresh token' });
   }

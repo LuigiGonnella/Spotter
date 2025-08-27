@@ -74,7 +74,7 @@ async function ProtectedRoute(url, options = {}) {
       res = await fetch(url, options); //riprovo stessa route
     }
     else {
-      logger.error("refresh error")
+      console.error("refresh error")
       localStorage.removeItem('accessToken');
       throw "Access to protected route denied";
     }

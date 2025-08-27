@@ -41,13 +41,21 @@ function App() {
   const handleAuth = async (type, data) => {
     try {
       setLoading(true);
+      let email = "";
+      let password = "";
       if (type === 'register') {
         const res = await register(data);
         if (!res || res.error) {
           throw new Error(res.error || 'Registration failed');
         }
+        email = data.get('email');
+        password = data.get('password');
       }
-      const user = await logIn(data.email, data.password);
+      else {
+        email = data.email;
+        password = data.password;
+      }
+      const user = await logIn(email, password);
       localStorage.setItem('accessToken', user.accessToken);
   
       setLoggedIn(true);
