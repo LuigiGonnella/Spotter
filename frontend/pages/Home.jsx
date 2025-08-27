@@ -64,8 +64,6 @@ function Home(props) {
                                     </div>
                                 </Card.Body>
                             </Card>
-    );
-}
 
                             {/* Active Gym Bros */}
                             <Card className="shadow-sm border-0">
@@ -90,6 +88,13 @@ function Home(props) {
                                                     <i className="bi bi-circle-fill me-1" style={{fontSize: '6px'}}></i>
                                                     Online now
                                                 </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </Card.Body>
+                            </Card>
+                        </Col>
+
                         {/* Main Feed */}
                         <Col lg={6} className="mb-4">
                             {/* Create Post */}
@@ -127,7 +132,7 @@ function Home(props) {
                                     </div>
                                 </Card.Body>
                             </Card>
-                                            </div>
+
                             {/* Feed Posts */}
                             {[1, 2, 3].map(i => (
                                 <Card key={i} className="shadow-sm border-0 mb-4">
@@ -189,7 +194,7 @@ function Home(props) {
                                 </Card>
                             ))}
                         </Col>
-                                        </div>
+
                         {/* Right Sidebar */}
                         <Col lg={3} className="mb-4">
                             {/* Gym Leaderboard */}
@@ -221,7 +226,7 @@ function Home(props) {
                                     ))}
                                 </Card.Body>
                             </Card>
-                                    ))}
+
                             {/* Upcoming Events */}
                             <Card className="shadow-sm border-0">
                                 <Card.Header style={{backgroundColor: '#000000', color: '#ffffff'}}>
@@ -301,7 +306,7 @@ function Home(props) {
                 )}
             </Container>
         </div>
-                                </Card.Body>
-                            </Card>
-                        </Col>
+    );
+}
+
 export default Home;
