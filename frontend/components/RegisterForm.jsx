@@ -97,14 +97,22 @@ function RegisterForm(props) {
                     </Form.Group>
                   </Col>
                 </Row>
-  );
-}
 
                 <Form.Group controlId='email' className='mb-3'>
                   <Form.Label className="fw-semibold text-dark">
                     <i className="bi bi-envelope me-2"></i>
                     Email Address
                   </Form.Label>
+                  <Form.Control 
+                    type='email' 
+                    name='email' 
+                    required 
+                    className="py-2 border-2"
+                    placeholder="your.email@example.com"
+                    style={{borderColor: '#dee2e6'}}
+                  />
+                </Form.Group>
+
                 <Form.Group controlId='password' className='mb-3'>
                   <Form.Label className="fw-semibold text-dark">
                     <i className="bi bi-lock me-2"></i>
@@ -120,7 +128,7 @@ function RegisterForm(props) {
                     style={{borderColor: '#dee2e6'}}
                   />
                 </Form.Group>
-                  <Form.Control 
+
                 <Form.Group controlId='dateOfBirth' className='mb-3'>
                   <Form.Label className="fw-semibold text-dark">
                     <i className="bi bi-calendar me-2"></i>
@@ -134,7 +142,7 @@ function RegisterForm(props) {
                     style={{borderColor: '#dee2e6'}}
                   />
                 </Form.Group>
-                    type='email' 
+
                 <Form.Group controlId='bio' className='mb-3'>
                   <Form.Label className="fw-semibold text-dark">
                     <i className="bi bi-chat-text me-2"></i>
@@ -149,7 +157,7 @@ function RegisterForm(props) {
                     style={{borderColor: '#dee2e6'}}
                   />
                 </Form.Group>
-                    name='email' 
+
                 <Form.Group controlId='profileImage' className='mb-3'>
                   <Form.Label className="fw-semibold text-dark">
                     <i className="bi bi-camera me-2"></i>
@@ -163,7 +171,7 @@ function RegisterForm(props) {
                     style={{borderColor: '#dee2e6'}}
                   />
                 </Form.Group>
-                    required 
+
                 <Form.Group controlId='isPublic' className='mb-4'>
                   <Form.Check 
                     type='checkbox' 
@@ -177,14 +185,14 @@ function RegisterForm(props) {
                     }
                   />
                 </Form.Group>
-                    className="py-2 border-2"
+
                 {state.error && (
                   <Alert variant="danger" className="fw-semibold">
                     <i className="bi bi-exclamation-triangle me-2"></i>
                     {state.error}
                   </Alert>
                 )}
-                    placeholder="your.email@example.com"
+
                 <div className="d-grid gap-3">
                   <Button 
                     type='submit' 
@@ -223,7 +231,7 @@ function RegisterForm(props) {
         </Col>
       </Row>
     </div>
-                    style={{borderColor: '#dee2e6'}}
-                  />
-                </Form.Group>
+  );
+}
+
 export default RegisterForm;
