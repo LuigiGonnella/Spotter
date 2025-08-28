@@ -1,5 +1,4 @@
 // ✅ Riassunto N:N
-// User <-> Gym (admin)
 // User <-> User (amicizie GymBro)
 // User <-> GroupChat (partecipanti)
 // Exercise <-> DailyWorkout (WorkoutExercise)
@@ -60,7 +59,8 @@ model User {
     GroupChatParticipant GroupChatParticipant[]
     GroupChat GroupChat[]
     Notification Notification[]
-    Gym Gym[] @relation("GymAdmins")
+    adminGymId Int?
+    Gym Gym? @relation("GymAdmin", fields: [adminGymId], references: [id])
 }
 
 model RefreshToken {
@@ -80,14 +80,14 @@ model RefreshToken {
 
 enum Role {
     USER
-    GYM_ADMIN
+    ADMIN
     SUPER_ADMIN
 }
 
 //palestra
 model Gym {
     id Int @id @default(autoincrement())
-    name String
+    name String 
     address String
     city String
     description String?
@@ -101,7 +101,7 @@ model Gym {
 
     createdAt DateTime @default(now())
 
-    admins    User[] @relation("GymAdmins")
+    admins    User[] @relation("GymAdmin")
 
 
     //relazioni

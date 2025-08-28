@@ -49,21 +49,54 @@ export async function findAllGyms(limit = 50) {
 };
 
 // --- TROVA PALESTRE PUBBLICHE PER NOME ---
-export async function findGymsByName(name, limit = 50) {
-    return prisma.gym.findMany({
+export async function findGymByName(name, limit = 50) {
+    return prisma.gym.findFirst({
         where: {
-            AND: [
-                { name: { contains: name, mode: 'insensitive' } },
-            ]
-        },
-        take: limit,
-        orderBy: {
-            exerciseRecords: { _count: 'desc' }
+            name
         }
     });
 }
 
 // ========================================
+// ========================================
+// GESTIONE ADMIN PALESTRA
+// ========================================
+
+/**
+ * Aggiunge un utente come admin della palestra
+ * @param {number} userId - ID utente
+ * @param {number} gymId - ID palestra
+ * @returns {Promise<Gym>} - Palestra aggiornata
+ */
+export async function addAdminToGym(userId, gymId) {
+    try {
+        // Aggiorna la palestra aggiungendo l'utente agli admin
+        const updatedGym = await prisma.gym.update({
+            where: { id: parseInt(gymId) },
+            data: {
+                admins: {
+                    connect: { id: parseInt(userId) }
+                }
+            },
+            include: {
+                admins: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        email: true,
+                        profileImage: true
+                    }
+                }
+            }
+        });
+        logger.info(`User ${userId} added as admin to gym ${gymId}`);
+        return updatedGym;
+    } catch (error) {
+        logger.error(`Error adding admin ${userId} to gym ${gymId}: ${error.message}`);
+        throw new Error(`Failed to add admin to gym: ${error.message}`);
+    }
+}
 // GESTIONE ISCRIZIONI UTENTI
 // ========================================
 
@@ -380,4 +413,14 @@ export async function getActiveGymMembers(gymId) {
         logger.error(`Error getting active members for gym ${gymId}: ${error.message}`);
         throw new Error(`Failed to get active gym members: ${error.message}`);
     }
+}
+
+export async function getGymByAdmin(userId) {
+  return await prisma.gym.findMany({
+    where: {
+      admins: {
+        some: { id: parseInt(userId) }
+      }
+    }
+  });
 }

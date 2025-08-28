@@ -10,22 +10,20 @@ function NavHeader(props) {
   };
 
   return (
-    <Navbar bg="dark" expand="lg" variant="dark" className="shadow-lg border-bottom border-secondary"> {/* expand per burger menu su schermi small/medium*/}
+    <Navbar bg="dark" expand="lg" variant="dark" className="shadow-lg border-bottom border-secondary">
       <Container fluid className="mx-auto col-10">
         {/* Logo linkato */}
         <Navbar.Brand as={Link} to="/" className="fw-bold fs-3 text-white">
           <i className="bi bi-trophy-fill me-2 text-warning"></i>
           Spotter
         </Navbar.Brand>
-        
-        {/* Navigation items */}
-        <div className="d-flex w-100 align-items-center">
+        <Navbar.Toggle aria-controls="main-navbar-nav" />
+        <Navbar.Collapse id="main-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link as={Link} to="/" className="fw-semibold text-light">
               <i className="bi bi-house me-1"></i>
               Home
             </Nav.Link>
-            
             {props.loggedIn && (
               <>
                 <Nav.Link as={Link} to="/my-gyms" className="fw-semibold text-light">
@@ -55,8 +53,6 @@ function NavHeader(props) {
               </>
             )}
           </Nav>
-
-          {/* bottoni sulla destra*/}
           <Nav className="ms-auto">
             {props.loggedIn ? (
               <Button 
@@ -78,7 +74,7 @@ function NavHeader(props) {
                 Join Spotter
               </Button>)}
           </Nav>
-        </div>
+        </Navbar.Collapse>
       </Container>
     </Navbar>
   );

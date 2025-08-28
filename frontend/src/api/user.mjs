@@ -15,7 +15,7 @@ const handleApiResponse = async (response) => {
       const errorData = await response.json();
       
       switch (response.status) {
-        case 422: // Validation errors
+        case 400: // Validation errors
           errorMessage = errorData.errors?.length > 0 
             ? `${errorData.errors[0].msg} for ${errorData.errors[0].path}`
             : errorData.error || 'Validation error';
@@ -101,7 +101,16 @@ export async function register(data) { /*const { email, password, firstName, las
 
   if (data.has('dateOfBirth')) {
     const value = data.get('dateOfBirth');
-    data.set('dateOfBirth', new Date(value).toISOString());
+    if (value) {
+      const dateObj = new Date(value);
+      if (!isNaN(dateObj.getTime())) {
+        data.set('dateOfBirth', dateObj.toISOString());
+      } else {
+        data.delete('dateOfBirth'); // rimuovo se non valida
+      }
+    } else {
+      data.delete('dateOfBirth'); // rimuovo se vuota
+    }
   }
   const res = await fetch(VITE_API_URL+'/api/auth/register', {
         method: 'POST',

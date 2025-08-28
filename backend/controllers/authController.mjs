@@ -7,7 +7,7 @@ import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '.
 import {GOOGLE_CLIENT_ID, COOKIE_SECURE, COOKIE_DOMAIN, REFRESH_TOKEN_EXP} from '../utils/config.mjs'
 import {findUserByEmail, createUser, updateUser, findUserById} from '../services/userService.mjs';
 import { createRefreshToken, findTokenById, updateToken } from '../services/authService.mjs';
-import { createGym, findGymsByName } from '../services/gymService.mjs';
+import { createGym, findGymByName, addAdminToGym } from '../services/gymService.mjs';
 
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
@@ -49,44 +49,52 @@ export async function register(req, res, next) { //registrazione classica con ma
 export async function registerGym(req, res, next) { //registrazione palestra, con admin corrispondente (alla prima registrazione della palestra si registrano automaticamente sia primo admin che palestra), se ancora non esiste la palestra la creo unverified e resta in attesa di verifica a parte mia, fino a quel momento gym  admin non possono fare niente
 //se già esiste una palestra (ha almeno un admin), l'admin deve essere accettato da uno già esistente (status_admin può essere pending, declined o accepted)
     try {
-        const {email, password, gymName, address, city} = req.body;
-        const existing_user = await findUserByEmail(email);
-        if (existing_user) return res.status(400).json({ error: 'Email already registered' });
-        const passwordHash = await hashPassword(password);
-        const existing_gym = await findGymsByName(gymName);
-        let user;
+        console.log("ciao");
+        console.log(req.body);
+        const {name, address, city, description, email, latitude, longitude} = req.body;
+        const existing_gym = await findGymByName(name);
+        console.log(existing_gym);
         if (existing_gym) {
-            user = await createUser({
-                email, 
-                passwordHash,
-                role: "GYM_ADMIN",
-                status_admin: "PENDING",
-                Gym: {
-                    connect: {id: existing_gym.id}
-                }
-            });
+            res.status(201).json({ id: existing_gym.id, name: existing_gym.name, address: existing_gym.address, city: existing_gym.city, description: existing_gym.description, email: existing_gym.email, latitude: existing_gym.latitude, longitude: existing_gym.longitude, existed: true });
+            return;
         }
-        else {
-            const created_gym = await createGym({name: gymName, address, city});
-            user = await createUser({
-                email, 
-                passwordHash,
-                role: "GYM_ADMIN",
-                status_admin: "PENDING",
-                Gym: {
-                    connect: {id: created_gym.id}
-                }
-            });
+        const created_gym = await createGym({name, address, city, description, email, latitude, longitude});
+        console.log(createGym);
 
-        }
-        
-        res.status(201).json({ id: user.id, email: user.email });
+        res.status(201).json({ id: created_gym.id, name: created_gym.name, address: created_gym.address, city: created_gym.city, description: created_gym.description, email: created_gym.email, latitude: created_gym.latitude, longitude: created_gym.longitude, existed: false });
         
     } catch (error) {
-        logger.error({ error }, 'Error in register');
+        logger.error({ error }, 'Error in gym register');
         next(error);   
     }
 }
+
+export async function registerAdmin(req, res, next) {
+    try {
+        const { email, password, role, status_admin, firstName, lastName, dateOfBirth, bio } = req.body;
+        const profileImage = req.file ? req.file.filename : null; // file è in req.file e non body
+
+        const existing = await findUserByEmail(email);
+        if (existing) {
+            logger.error('Email already registered');
+            return res.status(400).json({ error: 'Email already registered' });
+
+        }
+        const passwordHash = await hashPassword(password);
+        const isPublic = req.body.isPublic === 'true';
+        const gymId = req.body.gymId;
+        const userData = { email, passwordHash, role, status_admin, firstName, lastName, dateOfBirth, bio, profileImage, isPublic};
+        const user = await createUser(userData);
+        const updated_gym = await addAdminToGym(user.id, gymId );
+        res.status(201).json({ id: user.id, email: user.email, gymId: updated_gym.id, gymName: updated_gym.name});
+
+        
+    } catch (error) {
+        logger.error({ error }, 'Error in registeration process');
+        next(error);   
+    }
+}
+
 
 
 export async function googleOAuth(req, res, next) {

@@ -8,6 +8,7 @@ import {
 } from '../middlewares/auth.mjs';
 import {
   register,
+  registerAdmin,
   login,
   refresh,
   logout,
@@ -20,7 +21,9 @@ const upload = multer({ dest: 'uploads/' }); // oppure configura storage
 const router = express.Router();
 
 router.post('/register', upload.single('profileImage'), registerValidator, register); //TODO ratelimitermiddleware
-router.post('/registerGym', registerGymValidator, registerGym); //TODO ratelimitermiddleware
+router.post('/register/admin', upload.single('profileImage'), registerValidator, registerAdmin); //TODO ratelimitermiddleware
+
+router.post('/register/gym', registerGymValidator, registerGym); //TODO ratelimitermiddleware
 
 router.post('/login',  loginValidator,  login); //TODO ratelimitermiddleware
 router.post('/refresh', refresh); //TODO ratelimitermiddleware

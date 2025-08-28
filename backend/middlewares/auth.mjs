@@ -64,9 +64,7 @@ export const googleOAuthValidator = [
 
 
 export const registerGymValidator = [
-  body('email').isEmail().withMessage('Valid email required'),
-  body('password').isLength({ min: 8 }).withMessage('Password min 8 chars'),
-  body('gymName').notEmpty().withMessage('Gym name required'),
+  body('name').notEmpty().withMessage('Gym name required'),
   body('address').notEmpty().withMessage('Address required'),
   body('city').notEmpty().withMessage('City required'),
   (req, res, next) => {

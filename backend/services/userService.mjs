@@ -13,10 +13,9 @@ export async function createUser(userData) {
         // Unique constraint failed
         throw new Error('Email already registered');
         }
-                
+        throw error;
     }
 
-    console.log(user);
     return user;
 }
 

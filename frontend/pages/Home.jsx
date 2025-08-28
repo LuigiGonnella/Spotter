@@ -4,19 +4,21 @@ function Home(props) {
 
     return (
         <div className="min-vh-100" style={{backgroundColor: '#f8f9fa'}}>
+            {props.user && props.user.role==='ADMIN' && <p> ADMINNNNNNNNN</p>}
             {/* Hero Section */}
+            {!props.loggedIn && (
             <div className="text-center py-5 mb-4" style={{backgroundColor: '#000000', color: '#ffffff'}}>
                 <Container>
                     <Row className="justify-content-center">
                         <Col lg={8}>
-                            <i className="bi bi-trophy-fill display-1 text-warning mb-3"></i>
-                            <h1 className="display-4 fw-bold mb-3">
+                            <i className="bi bi-trophy-fill display-4 text-warning mb-3"></i>
+                            <h3 className=" fw-bold mb-3">
                                 Welcome to Spotter
-                            </h1>
+                            </h3>
                             <p className="lead mb-4">
                                 Your fitness community where gym bros connect, compete, and grow stronger together
                             </p>
-                            {!props.loggedIn && (
+                            
                                 <Button 
                                     variant="warning" 
                                     size="lg" 
@@ -26,18 +28,18 @@ function Home(props) {
                                     <i className="bi bi-person-plus me-2"></i>
                                     Join the Community
                                 </Button>
-                            )}
+                    
                         </Col>
                     </Row>
                 </Container>
             </div>
+            )}
 
-            <Container>
                 {props.loggedIn ? (
                     // Logged in user dashboard
                     <Row>
                         {/* Left Sidebar - Quick Stats */}
-                        <Col lg={3} className="mb-4">
+                        <Col className="mb-4">
                             <Card className="shadow-sm border-0 mb-3">
                                 <Card.Header style={{backgroundColor: '#000000', color: '#ffffff'}}>
                                     <h5 className="mb-0 fw-bold">
@@ -262,7 +264,6 @@ function Home(props) {
                 ) : (
                     // Not logged in - showcase features
                     <Row className="justify-content-center">
-                        <Col lg={10}>
                             <Row>
                                 <Col md={4} className="mb-4">
                                     <Card className="h-100 shadow-sm border-0 text-center">
@@ -301,10 +302,8 @@ function Home(props) {
                                     </Card>
                                 </Col>
                             </Row>
-                        </Col>
                     </Row>
                 )}
-            </Container>
         </div>
     );
 }

@@ -8,6 +8,8 @@ import DefaultLayout from '../components/DefaultLayout';
 import Home from '../pages/Home'
 import AuthForm from '../pages/AuthForm';
 import { registerOAuthGoogle } from '../src/api/user.mjs';
+import NotFound from '../pages/NotFound';
+import { registerAdmin, registerGym } from './api/gym.mjs';
 
 
 function App() {
@@ -16,6 +18,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [authType, setAuthType] = useState("login");
+  const [gym, setGym] = useState(null);
 
 
   useEffect(() => {
@@ -40,30 +43,64 @@ function App() {
     checkUser();
   }, []); 
 
-  const handleAuth = async (data) => {
+  const gymAuth = async (data) => {
+    try {
+      setLoading(true);
+      console.log(data);
+      const gym = await registerGym(data);
+      gym.existed? setMessage({msg:'Successfully connected to your gym!', type: 'success'}) : setMessage({msg:'Gym successfully registered!', type: 'success'});
+      return gym;
+    } catch (error) {
+      setMessage({msg:`${error}`, type:'danger'});
+    }
+    finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAuth = async (data, gym_=null) => {
     try {
       setLoading(true);
       let email = "";
       let password = "";
-      if (authType === 'register') {
-        const res = await register(data);
-        if (!res || res.error) {
-          throw new Error(res.error || 'Registration failed');
+      console.log("CIAOOOOO");
+      console.log(gym_);
+      if (gym_!=null) {
+        console.log("sium");
+        data.append('role', 'ADMIN');
+        data.append('status_admin', 'PENDING');
+        data.append('gymId', gym_.id);
+      }
+        let res = null;
+        if (authType === 'register' || gym_ != null) {
+         console.log("value"+gym_);
+          res = gym_==null ? await register(data) : await registerAdmin(data);
+          console.log(res);
+          if (!res || res.error) {
+            throw new Error(res.error || 'Registration failed');
+          }
+          email = data.get('email');
+          password = data.get('password');
         }
-        email = data.get('email');
-        password = data.get('password');
+        else {
+          email = data.email;
+          password = data.password;
+        }
+        const user = await logIn(email, password);
+        console.log(user);
+        if (user.role==='ADMIN' && gym_!=null) {
+          setGym(gym_);
+        }
+        localStorage.setItem('accessToken', user.accessToken);
+    
+        setLoggedIn(true);
+        setUser(user);
+        authType=='register'? (user.role==='ADMIN' ?
+          setMessage({msg: `Registration completed!, welcome ADMIN: ${user.firstName? user.firstName : user.email}`, type:'success'}) : setMessage({msg: `Registration completed!, welcome ${user.firstName? user.firstName : user.email}`, type: "success"})) : (user.role==='ADMIN' ? setMessage({msg: `Login completed!, welcome ADMIN: ${user.firstName? user.firstName : user.email}`, type: "success"}) : setMessage({msg: `Login completed!, welcome ${user.firstName? user.firstName : user.email}`, type: "success"}));
+
       }
-      else {
-        email = data.email;
-        password = data.password;
-      }
-      const user = await logIn(email, password);
-      localStorage.setItem('accessToken', user.accessToken);
-  
-      setLoggedIn(true);
-      setUser(user);
-      authType=='register'? setMessage({msg: `Registration completed!, welcome ${user.firstName? user.firstName : user.email}`, type: "success"}) : setMessage({msg: `Login completed!, welcome ${user.firstName? user.firstName : user.email}`, type: "success"});
-    } catch (error) {
+      
+    catch (error) {
       setMessage({msg:`${error}`, type:'danger'});
     }
     finally {
@@ -100,7 +137,8 @@ function App() {
         locale: 'en',
         shape: 'pill',        // bordi arrotondati
         text: 'continue_with',// testo più lungo
-        width: 280            // larghezza custom
+        width: 300,           // larghezza custom
+        height: 1000
       }
     );
       
@@ -149,7 +187,7 @@ function App() {
     return (
       <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
       <div className="text-center">
-        <div className="spinner-border text-primary" role="status" style={{width: "3rem", height: "3rem"}}>
+        <div className="spinner-border text-dark" role="status" style={{width: "3rem", height: "3rem"}}>
           <span className="visually-hidden">Loading...</span>
         </div>
         <p className="mt-3 fs-5 text-secondary">Loading...</p>
@@ -161,13 +199,13 @@ function App() {
   return (
     <Routes>
       <Route element={
-        <DefaultLayout loggedIn={loggedIn} handleLogout={handleLogout} message={message} setMessage={setMessage} user={user}>
+        <DefaultLayout loggedIn={loggedIn} handleLogout={handleLogout} message={message} setMessage={setMessage} user={user} gym={gym}>
         </DefaultLayout>
       }>
-      <Route path='/' element={<Home loggedIn={loggedIn} user={user}></Home>}></Route>
-      <Route path='/auth' element={loggedIn ? <Navigate replace to='/'></Navigate> : <AuthForm authType={authType} setAuthType={setAuthType} handleAuth={handleAuth} googleAuth={GoogleLoginButton}></AuthForm>}></Route>
+      <Route path='/' element={<Home loggedIn={loggedIn} user={user} gym={gym}></Home>}></Route>
+      <Route path='/auth' element={loggedIn ? <Navigate replace to='/'></Navigate> : <AuthForm authType={authType} setAuthType={setAuthType} handleAuth={handleAuth} googleAuth={GoogleLoginButton} gymAuth={gymAuth}></AuthForm>}></Route>
       </Route>
-
+      <Route path='*' element={<NotFound></NotFound>}></Route>
 
 
 
