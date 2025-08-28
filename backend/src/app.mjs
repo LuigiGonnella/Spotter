@@ -29,6 +29,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 
 
+
 //healthcheck
 
 app.get('/health', (req, res) => res.json({ok: true}));

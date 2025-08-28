@@ -7,6 +7,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import DefaultLayout from '../components/DefaultLayout';
 import Home from '../pages/Home'
 import AuthForm from '../pages/AuthForm';
+import { registerOAuthGoogle } from '../src/api/user.mjs';
+
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -38,12 +40,12 @@ function App() {
     checkUser();
   }, []); 
 
-  const handleAuth = async (type, data) => {
+  const handleAuth = async (data) => {
     try {
       setLoading(true);
       let email = "";
       let password = "";
-      if (type === 'register') {
+      if (authType === 'register') {
         const res = await register(data);
         if (!res || res.error) {
           throw new Error(res.error || 'Registration failed');
@@ -60,7 +62,7 @@ function App() {
   
       setLoggedIn(true);
       setUser(user);
-      type=='register'? setMessage({msg: `Registration completed!, welcome ${user.firstName? user.firstName : user.email}`, type: "success"}) : setMessage({msg: `Login completed!, welcome ${user.firstName? user.firstName : user.email}`, type: "success"});
+      authType=='register'? setMessage({msg: `Registration completed!, welcome ${user.firstName? user.firstName : user.email}`, type: "success"}) : setMessage({msg: `Login completed!, welcome ${user.firstName? user.firstName : user.email}`, type: "success"});
     } catch (error) {
       setMessage({msg:`${error}`, type:'danger'});
     }
@@ -68,6 +70,63 @@ function App() {
       setLoading(false);
     }
   };
+
+  function GoogleLoginButton() {
+  useEffect(() => {
+    try {
+      setLoading(true);
+      /* global google */
+      google.accounts.id.initialize({
+        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+        callback: async (response) => {
+          // idToken restituito da Google
+          const idToken = response.credential;
+
+          const user = await registerOAuthGoogle(idToken);
+          localStorage.setItem('accessToken', user.accessToken);
+          setLoggedIn(true);
+          setUser(user);
+          setMessage({msg: `Login completed!, welcome ${user.firstName? user.firstName : user.email}`, type: "success"});
+
+          
+        },
+      });
+
+      google.accounts.id.renderButton(
+      document.getElementById('googleBtn'),
+      {
+        theme: 'filled_black', // più in rilievo
+        size: 'large',        // già il massimo, ma puoi aumentare la visibilità
+        locale: 'en',
+        shape: 'pill',        // bordi arrotondati
+        text: 'continue_with',// testo più lungo
+        width: 280            // larghezza custom
+      }
+    );
+      
+    } catch (error) {
+      setMessage({msg:`${error}`, type:'danger'});
+    }
+    finally {
+      setLoading(false);
+    }
+    
+  }, []);
+
+  return (
+      <div
+        id="googleBtn"
+        style={{
+          margin: '0 auto',
+          marginBottom: '20px',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.10)',
+          borderRadius: '32px',
+          maxWidth: '300px',
+          background: 'transparent'
+        }}
+      ></div>
+    );
+}
 
   const handleLogout = async () => {
     try {
@@ -106,7 +165,7 @@ function App() {
         </DefaultLayout>
       }>
       <Route path='/' element={<Home loggedIn={loggedIn} user={user}></Home>}></Route>
-      <Route path='/auth' element={loggedIn ? <Navigate replace to='/'></Navigate> : <AuthForm authType={authType} setAuthType={setAuthType} handleAuth={handleAuth}></AuthForm>}></Route>
+      <Route path='/auth' element={loggedIn ? <Navigate replace to='/'></Navigate> : <AuthForm authType={authType} setAuthType={setAuthType} handleAuth={handleAuth} googleAuth={GoogleLoginButton}></AuthForm>}></Route>
       </Route>
 
 

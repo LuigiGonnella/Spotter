@@ -33,7 +33,7 @@ function RegisterForm(props) {
   }
 
   try {
-    await props.handleAuth("register", data); // ora data è FormData
+    await props.handleAuth(data); // ora data è FormData
     return { success: true };
   } catch (error) {
     return { error: 'Registration failed. Please check your information and try again.' };
@@ -62,6 +62,9 @@ function RegisterForm(props) {
               <p className="mb-0 text-light opacity-75">Connect with gym bros and elevate your fitness</p>
             </Card.Header>
             <Card.Body className="p-4">
+              <div className="d-flex justify-content-center mt-2 mb-4">
+              {props.googleAuth && <props.googleAuth />}
+              </div>
               <Form action={formAction}>
                 <Row>
                   <Col md={6}>

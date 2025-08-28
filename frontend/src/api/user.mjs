@@ -1,5 +1,5 @@
 // Helper function per l'errore handling
-import { NEXT_PUBLIC_API_URL } from "../../utils/config.mjs";
+import { VITE_API_URL } from "../../utils/config.mjs";
 const handleApiResponse = async (response) => {
     if (response.ok) {
       // Controlla se la risposta ha un contenuto JSON
@@ -55,7 +55,7 @@ async function ProtectedRoute(url, options = {}) {
 
   let res = await fetch(url, options);
   if (res.status === 401) {
-    const refresh = await fetch(NEXT_PUBLIC_API_URL+'/api/auth/refresh', {
+    const refresh = await fetch(VITE_API_URL+'/api/auth/refresh', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -87,7 +87,7 @@ async function ProtectedRoute(url, options = {}) {
 export async function getUserInfo() { //credentials: include serve solo se stiamo inviando qualcosa via cookie (sessione ecc..)
     const accessToken = localStorage.getItem('accessToken');
 
-    return ProtectedRoute(NEXT_PUBLIC_API_URL+'/api/user/profile', {
+    return ProtectedRoute(VITE_API_URL+'/api/user/profile', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${accessToken}`,
@@ -103,7 +103,7 @@ export async function register(data) { /*const { email, password, firstName, las
     const value = data.get('dateOfBirth');
     data.set('dateOfBirth', new Date(value).toISOString());
   }
-  const res = await fetch(NEXT_PUBLIC_API_URL+'/api/auth/register', {
+  const res = await fetch(VITE_API_URL+'/api/auth/register', {
         method: 'POST',
         body: data, //non è json, ha un fle (immagine profilo) che si salva in req.file
     });
@@ -113,7 +113,7 @@ export async function register(data) { /*const { email, password, firstName, las
   
     2) Quando l’utente invia il form, tu crei un oggetto FormData con tutti i dati e il file.
 
-    3) Chiami handleAuth("register", data) passando il FormData.
+    3) Chiami handleAuth(data) passando il FormData.
 
     4) handleAuth chiama la funzione register(data) che fa una richiesta fetch con il FormData come body.
     5)Nel backend, la route /api/auth/register usa il middleware multer (upload.single('profileImage')).
@@ -124,8 +124,23 @@ export async function register(data) { /*const { email, password, firstName, las
     return handleApiResponse(res);
 }
 
+export async function registerOAuthGoogle(idToken) {
+  const res = await fetch(VITE_API_URL+'/api/auth/oauth/google', {
+    method: 'POST',
+    body: JSON.stringify({
+      'idToken': `${idToken}`
+    }),
+    headers: {
+      'Content-Type': 'application/json' //se invio dati formato json nel body
+    }
+  })
+
+  return handleApiResponse(res);
+
+}
+
 export async function logIn(email, password) {
-  const res = await fetch(NEXT_PUBLIC_API_URL+'/api/auth/login', {
+  const res = await fetch(VITE_API_URL+'/api/auth/login', {
         method: 'POST',
         body: JSON.stringify({
           'email': `${email}`,
@@ -140,7 +155,7 @@ export async function logIn(email, password) {
 }
 
 export async function logOut() {
-  const res = await fetch(NEXT_PUBLIC_API_URL+'/api/auth/logout', {
+  const res = await fetch(VITE_API_URL+'/api/auth/logout', {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json' //se invio dati formato json nel body

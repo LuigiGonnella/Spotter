@@ -124,7 +124,7 @@ export async function googleOAuth(req, res, next) {
         }
         else { //se la mail era già stata registrata tradizionalmente e l'utente ancora non è stato collegato a google
             if (!user.provider || !user.providerId) {
-                user = updateUser({provider: 'google', providerId});   
+                user = updateUser({id: user.id, provider: 'google', providerId});   
             }
         }
         const { token: accessToken } = generateAccessToken({ userId: user.id, email: user.email, role: user.role });
@@ -135,7 +135,15 @@ export async function googleOAuth(req, res, next) {
          const tokenJS = await createRefreshToken({ jti, tokenHash, userId: user.id, expiresAt });
 
         res.cookie('refreshToken', refreshToken, cookieOptions(expiresAt.getTime() - Date.now()));
-        res.json({ accessToken });
+        res.json({ accessToken, id: user.id,
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                bio: user.bio,
+                profileImage: user.profileImage,
+                role: user.role,
+                isPublic: user.isPublic,
+                createdAt: user.createdAt});
     } catch (err) {
         logger.error({ err }, 'Google OAuth error');
         next(err);

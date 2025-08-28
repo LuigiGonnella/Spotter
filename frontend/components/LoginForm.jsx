@@ -13,7 +13,7 @@ function LoginForm(props) {
         };
 
         try {
-            await props.handleAuth("login", data);
+            await props.handleAuth(data);
             return { success: true };
         } catch (error) {
             return { error: 'Login failed. Please check your credentials and try again.' };
@@ -21,7 +21,9 @@ function LoginForm(props) {
     }    
     
     return (
+    
         <div className="min-vh-100 d-flex align-items-center justify-content-center" style={{backgroundColor: '#212529'}}>
+            
             <Row className="w-100 justify-content-center">
                 <Col md={6} lg={5} xl={4}>
                     { isPending && (
@@ -30,6 +32,7 @@ function LoginForm(props) {
                             Connecting to Spotter...
                         </Alert> 
                     )}
+                    
                     <Card className="shadow-lg border-0" style={{backgroundColor: '#ffffff'}}>
                         <Card.Header className="text-center py-4" style={{backgroundColor: '#000000', color: '#ffffff'}}>
                             <div className="mb-2">
@@ -72,6 +75,9 @@ function LoginForm(props) {
                                         style={{borderColor: '#dee2e6'}}
                                     />
                                 </Form.Group>
+                                    <div className="d-flex justify-content-center mt-2 mb-4 mt-5">
+                                    {props.googleAuth && <props.googleAuth />}
+                                    </div>
 
                                 {state.error && (
                                     <Alert variant="danger" className="fw-semibold">

@@ -4,17 +4,9 @@ import logger from '../utils/logger.mjs'
 export async function createUser(userData) {
     let user;
     try {
-        if (userData.passwordHash) {
-                user = await prisma.user.create({
-                data: userData
-                });
-            }
-            else {
-                logger.error("Password not found!");
-                throw new Error("Password not found");
-                
-            }
-    
+        user = await prisma.user.create({
+        data: userData
+        });
     } 
     catch (error) {
         if (error.code === 'P2002') {
@@ -24,7 +16,7 @@ export async function createUser(userData) {
                 
     }
 
-    
+    console.log(user);
     return user;
 }
 
@@ -92,8 +84,9 @@ export async function findPublicUsers() {
 }
 
 export async function updateUser(userData) { //posso passare solo i campi da modificare, senza sovrascrivere tutto
+    let user;
     try {
-        return await prisma.user.update(
+        user= await prisma.user.update(
         {
             where: {id: userData.id},
             data: userData
@@ -104,6 +97,8 @@ export async function updateUser(userData) { //posso passare solo i campi da mod
         logger.error(`User with email - ${userData.email} not found!`);
         throw new Error(`User not found`);
     }
+    console.log(user);
+    return user;
 }
 
 // ========================================
