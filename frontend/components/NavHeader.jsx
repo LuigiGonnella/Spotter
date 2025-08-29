@@ -26,7 +26,9 @@ function NavHeader(props) {
             </Nav.Link>
             {props.loggedIn && (
               <>
-                <Nav.Link as={Link} to="/my-gyms" className="fw-semibold text-light">
+              {props.user.role != 'ADMIN' && 
+              <>
+               <Nav.Link as={Link} to="/my-gyms" className="fw-semibold text-light">
                   <i className="bi bi-building me-1"></i>
                   My Gyms
                 </Nav.Link>
@@ -38,6 +40,8 @@ function NavHeader(props) {
                   <i className="bi bi-people me-1"></i>
                   Gym Bros
                 </Nav.Link>
+              </>
+                }
                 <Nav.Link as={Link} to="/posts" className="fw-semibold text-light">
                   <i className="bi bi-chat-square-text me-1"></i>
                   Posts

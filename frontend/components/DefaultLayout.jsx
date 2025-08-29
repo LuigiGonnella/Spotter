@@ -8,7 +8,7 @@ function DefaultLayout(props) {
   return(
     <div className="min-vh-100" style={{backgroundColor: '#ffffffff'}}>
       <NavHeader loggedIn={props.loggedIn} handleLogout={props.handleLogout} user={props.user} />
-      <Container fluid className="py-4" style={{width: '100%'}}>
+      <Container fluid className="py-1" style={{width: '100%'}}>
         {props.message && <Row>
           <Alert 
             variant={props.message.type} 

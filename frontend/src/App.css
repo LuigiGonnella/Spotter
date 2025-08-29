@@ -1,0 +1,49 @@
+/* MyGyms page styles */
+.mygyms-container {
+    background: linear-gradient(180deg, #fff 0%, #f8f9fa 100%);
+    min-height: 100vh;
+}
+.mygyms-title {
+    font-size: 2.2rem;
+    color: #111;
+    letter-spacing: -1px;
+}
+.mygyms-subtitle {
+    font-size: 1.1rem;
+}
+.mygyms-subscribe-btn {
+    background: linear-gradient(90deg, #ffd700 0%, #ffb700 100%);
+    color: #111;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    transition: background 0.2s;
+}
+.mygyms-subscribe-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+.mygyms-card {
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    padding: 24px 18px;
+}
+.mygyms-card-empty {
+    border-radius: 18px;
+    background: #fffbe6;
+    box-shadow: 0 4px 16px rgba(255,193,7,0.10);
+    padding: 32px 18px;
+}
+.mygyms-gymname {
+    color: #d4af37;
+    font-size: 1.3rem;
+}
+.mygyms-description {
+    font-size: 1rem;
+    color: #333;
+}
+.mygyms-email {
+    font-size: 0.95rem;
+}

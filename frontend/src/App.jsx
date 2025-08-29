@@ -10,7 +10,7 @@ import AuthForm from '../pages/AuthForm';
 import { registerOAuthGoogle } from '../src/api/user.mjs';
 import NotFound from '../pages/NotFound';
 import { registerAdmin, registerGym } from './api/gym.mjs';
-
+import MyGyms from '../pages/MyGyms';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -28,13 +28,15 @@ function App() {
         const user = await getUserInfo();
         
         setLoggedIn(true);
-        setUser(user);
+        setUser(user[0]);
+        setGym(user[1]);
       }
       catch(err) {
         console.error('getUserInfo error:', err);
 
         setLoggedIn(false);
         setUser(null);
+        setGym(null);
       }
       finally {
         setLoading(false);
@@ -86,17 +88,22 @@ function App() {
           email = data.email;
           password = data.password;
         }
-        const user = await logIn(email, password);
-        console.log(user);
-        if (user.role==='ADMIN' && gym_!=null) {
+        const user_loc = await logIn(email, password);
+        console.log(user_loc);
+        if (user_loc[0].role==='ADMIN' && gym_!=null) {
           setGym(gym_);
         }
-        localStorage.setItem('accessToken', user.accessToken);
+        else if (user_loc[0].role === 'ADMIN') {
+          setGym(user_loc[1]);
+          console.log(user_loc[1]);
+        }
+        localStorage.setItem('accessToken', user_loc[0].accessToken);
     
         setLoggedIn(true);
-        setUser(user);
-        authType=='register'? (user.role==='ADMIN' ?
-          setMessage({msg: `Registration completed!, welcome ADMIN: ${user.firstName? user.firstName : user.email}`, type:'success'}) : setMessage({msg: `Registration completed!, welcome ${user.firstName? user.firstName : user.email}`, type: "success"})) : (user.role==='ADMIN' ? setMessage({msg: `Login completed!, welcome ADMIN: ${user.firstName? user.firstName : user.email}`, type: "success"}) : setMessage({msg: `Login completed!, welcome ${user.firstName? user.firstName : user.email}`, type: "success"}));
+        setUser(user_loc[0]);
+        console.log(user_loc[0]);
+        authType=='register'? (user_loc[0].role==='ADMIN' ?
+          setMessage({msg: `Registration completed!, welcome ADMIN: ${user_loc[0].firstName? user_loc[0].firstName : user_loc[0].email}`, type:'success'}) : setMessage({msg: `Registration completed!, welcome ${user_loc[0].firstName? user_loc[0].firstName : user_loc[0].email}`, type: "success"})) : (user_loc[0].role==='ADMIN' ? setMessage({msg: `Login completed!, welcome ADMIN: ${user_loc[0].firstName? user_loc[0].firstName : user_loc[0].email}`, type: "success"}) : setMessage({msg: `Login completed!, welcome ${user_loc[0].firstName? user_loc[0].firstName : user_loc[0].email}`, type: "success"}));
 
       }
       
@@ -204,7 +211,14 @@ function App() {
       }>
       <Route path='/' element={<Home loggedIn={loggedIn} user={user} gym={gym}></Home>}></Route>
       <Route path='/auth' element={loggedIn ? <Navigate replace to='/'></Navigate> : <AuthForm authType={authType} setAuthType={setAuthType} handleAuth={handleAuth} googleAuth={GoogleLoginButton} gymAuth={gymAuth}></AuthForm>}></Route>
+      <Route path='/my-gyms' element={<MyGyms user={user}></MyGyms>}></Route>
+      <Route path='/search-gyms' element={<SearchGyms user={user}></SearchGyms>}></Route>
+
+
+
+
       </Route>
+      
       <Route path='*' element={<NotFound></NotFound>}></Route>
 
 

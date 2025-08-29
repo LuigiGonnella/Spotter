@@ -39,14 +39,48 @@ export async function updateGym(gymData) { //posso passare solo i campi da modif
 }
 
 // --- TROVA TUTTE LE PALESTRE ---
-export async function findAllGyms(limit = 50) {
-    return prisma.gym.findMany({
-        take: limit,
-        orderBy: {
-            exerciseRecords: { _count: 'desc' } // popolarità basata sui record
+export async function findAllGyms({ page = 1, pageSize = 20, data = {} } = {}) {
+    const skip = (page - 1) * pageSize;
+    const take = pageSize;
+        const where = {};
+        if (data.name) where.name = { contains: data.name, mode: 'insensitive' };
+        if (data.address) where.address = { contains: data.address, mode: 'insensitive' };
+        if (data.city) where.city = { contains: data.city, mode: 'insensitive' };
+        if (data.description) where.description = { contains: data.description, mode: 'insensitive' };
+        if (data.email) where.email = { contains: data.email, mode: 'insensitive' };
+        if (typeof data.verified === 'boolean') where.verified = data.verified;
+        if (data.latitude) where.latitude = data.latitude;
+        if (data.longitude) where.longitude = data.longitude;
+
+    const [gyms, total] = await Promise.all([
+        prisma.gym.findMany({
+            skip,
+            take,
+            where,
+            orderBy: {
+                exerciseRecords: { _count: 'desc' }
+            }
+        }),
+        prisma.gym.count({where})
+    ]);
+
+    return {
+        gyms,
+        pagination: {
+            page,
+            pageSize,
+            total,
+            totalPages: Math.ceil(total / pageSize),
+            hasMore: skip + take < total
+        },
+        links: { //HATEAOS
+            self: `/api/gyms/findAll?page=${page}&pageSize=${pageSize}`,
+            prev: page > 1 ? `/api/gyms/findAll?skip=${page-1}&pageSize=${pageSize}` : null,
+            next: skip + take < total ? `/api/gyms/findAll?page=${page+1}&pageSize=${pageSize}` : null
+
         }
-    })
-};
+    };
+}
 
 // --- TROVA PALESTRE PUBBLICHE PER NOME ---
 export async function findGymByName(name, limit = 50) {
@@ -270,16 +304,7 @@ export async function getUserGyms(userId) {
                 isActive: true
             },
             include: {
-                gym: {
-                    select: {
-                        id: true,
-                        name: true,
-                        city: true,
-                        verified: true,
-                        address: true,
-                        description: true
-                    }
-                }
+                gym: true
             },
             orderBy: { joinedAt: 'desc' }
         });
@@ -416,7 +441,7 @@ export async function getActiveGymMembers(gymId) {
 }
 
 export async function getGymByAdmin(userId) {
-  return await prisma.gym.findMany({
+  return await prisma.gym.findFirst({
     where: {
       admins: {
         some: { id: parseInt(userId) }

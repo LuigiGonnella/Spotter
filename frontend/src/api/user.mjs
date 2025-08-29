@@ -93,7 +93,7 @@ export async function getUserInfo() { //credentials: include serve solo se stiam
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json'
         },
-        credentials: 'include'
+        credentials: 'include' //non serve perchè non stiamo inviando refreshToken
     });
 }
 

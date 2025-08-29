@@ -4,6 +4,7 @@ import cors from 'cors';
 import { BASE_URL, CORS_ORIGIN, PORT } from '../utils/config.mjs';
 import authRoutes from '../routes/authRoutes.mjs';
 import userRoutes from '../routes/userRoutes.mjs';
+import gymRoutes from '../routes/gymRoutes.mjs';
 import { errorHandler } from '../middlewares/errorHandler.mjs';
 
 
@@ -19,7 +20,7 @@ res.cookie('refreshToken', refreshToken, {
 */
 app.use(cors(
     {origin: CORS_ORIGIN,
-    credentials: true //richiede che il front-end faccia richieste con withCredentials: true
+    credentials: true //richiede che il front-end faccia richieste con credentials: include
     }
 ));
 app.use('/uploads', express.static('backend/uploads'));
@@ -27,6 +28,8 @@ app.use('/uploads', express.static('backend/uploads'));
 app.use('/api/auth', authRoutes);
 
 app.use('/api/user', userRoutes);
+
+app.use('/api/gyms', gymRoutes);
 
 
 

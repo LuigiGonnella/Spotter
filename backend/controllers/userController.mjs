@@ -1,5 +1,6 @@
 import { updateUser, findUserById } from '../services/userService.mjs';
 import logger from '../utils/logger.mjs';
+import { getGymByAdmin, getUserGyms } from '../services/gymService.mjs';
 /**
  * Aggiorna il profilo dell'utente
  * Campi opzionali: firstName, lastName, dateOfBirth, bio, profileImage, isPublic
@@ -44,15 +45,18 @@ export async function getProfile(req, res, next) {
   const userId = req.user.id;
   try {
     const user = await findUserById(userId);
-
+    let gym = null;
     if (!user) {
       logger.error('User not found');
       let e = new Error('User not found');
       e.status = 404;
       return next(e);
     }
+    if (user.role === 'ADMIN') {
+      gym = getGymByAdmin(user.id);
+    }
 
-    const safeUser = {
+    const safeUser = [{
       id: user.id,
       email: user.email,
       firstName: user.firstName,
@@ -61,14 +65,34 @@ export async function getProfile(req, res, next) {
       profileImage: user.profileImage,
       role: user.role,
       isPublic: user.isPublic,
-      createdAt: user.createdAt
-    };
+      createdAt: user.createdAt,
+    }, gym ? {id: gym.id, name: gym.name, address: gym.address, city: gym.city, description: gym.description, email: gym.email, verified: gym.verified, latitude: gym.latitude, longitude: gym.longitude} : null];
 
     res.json(safeUser);
 
     
   } catch (error) {
     logger.error(`Error processing profile data - ${error.message}`);
+    next(error);
+  }
+}
+
+export async function getUserGymsController(req, res, next) {
+  const userId = req.params.userId;
+  try {
+    const gyms = await getUserGyms(userId);
+    if (!gyms) {
+      res.json([]);
+      return;
+    }
+
+    const gyms_to_return = gyms.map((gym) => ({id: gym.id, name: gym.name, address: gym.address, city: gym.city, description: gym.description, email: gym.email, verified: gym.verified, latitude: gym.latitude, longitude: gym.longitude}));
+
+    res.json(gyms_to_return);
+
+    
+  } catch (error) {
+    logger.error(`Error processing gyms data - ${error.message}`);
     next(error);
   }
 }

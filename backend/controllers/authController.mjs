@@ -7,7 +7,7 @@ import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '.
 import {GOOGLE_CLIENT_ID, COOKIE_SECURE, COOKIE_DOMAIN, REFRESH_TOKEN_EXP} from '../utils/config.mjs'
 import {findUserByEmail, createUser, updateUser, findUserById} from '../services/userService.mjs';
 import { createRefreshToken, findTokenById, updateToken } from '../services/authService.mjs';
-import { createGym, findGymByName, addAdminToGym } from '../services/gymService.mjs';
+import { createGym, findGymByName, addAdminToGym, getGymByAdmin} from '../services/gymService.mjs';
 
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
@@ -187,7 +187,11 @@ export async function login(req, res, next) {
         const tokenJS = await createRefreshToken({ jti, tokenHash , userId: user.id, expiresAt });
 
         res.cookie('refreshToken', refreshToken, cookieOptions(expiresAt.getTime()-Date.now()));
-        res.json({accessToken, id: user.id,
+        let gym = null;
+        if (user.role === 'ADMIN') {
+            gym = await getGymByAdmin(user.id);
+        }
+        res.json([{accessToken, id: user.id,
                 email: user.email,
                 firstName: user.firstName,
                 lastName: user.lastName,
@@ -195,7 +199,7 @@ export async function login(req, res, next) {
                 profileImage: user.profileImage,
                 role: user.role,
                 isPublic: user.isPublic,
-                createdAt: user.createdAt});
+                createdAt: user.createdAt}, gym? {id: gym.id, name: gym.name, address: gym.address, city: gym.city, description: gym.description, email: gym.email, verified: gym.verified, latitude: gym.latitude, longitude: gym.longitude}: null]);
     }
     catch(err) {
         logger.error({ err }, 'Unexpected error during login');

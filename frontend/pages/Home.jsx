@@ -3,8 +3,29 @@ import { Container, Row, Col, Card, Button, Badge, Image } from 'react-bootstrap
 function Home(props) {
 
     return (
-        <div className="min-vh-100" style={{backgroundColor: '#f8f9fa'}}>
-            {props.user && props.user.role==='ADMIN' && <p> ADMINNNNNNNNN</p>}
+        
+        <div className="min-vh-100" style={{backgroundColor: '#ffffffff'}}>
+        {console.log(props.gym)}    
+        {console.log(props.user)}        
+            {props.user && props.user.role==='ADMIN' && (
+                <div>
+                    <span className="badge bg-warning text-dark shadow-lg px-4 mb-1 fs-5 fw-bold" style={{
+                        borderRadius: '18px',
+                        fontSize: '1.25rem',
+                        letterSpacing: '1px',
+                        boxShadow: '0 4px 16px rgba(255,193,7,0.18)',
+                        border: '2px solid #fff',
+                        textShadow: '0 2px 8px rgba(0,0,0,0.10)',
+                        background: 'linear-gradient(90deg, #ffd700 0%, #ecdf9aff 100%)',
+                        color: '#111',
+                        alignItems: 'center',
+                    }}>
+                        <i className="bi bi-shield-lock-fill me-2" style={{color: '#d4af37', fontSize: '1.5rem'}}></i>
+                        ADMIN of {props.gym.name}
+                    </span>
+                </div>
+            )}
+            
             {/* Hero Section */}
             {!props.loggedIn && (
             <div className="text-center py-5 mb-4" style={{backgroundColor: '#000000', color: '#ffffff'}}>
