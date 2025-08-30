@@ -4,6 +4,6 @@ import { requireAuth } from '../middlewares/auth.mjs';
 import { getAllGyms } from '../controllers/gymController.mjs';
 const router = express.Router();
 
-router.get("/findAll", getAllGyms);
+router.get("/findAll", requireAuth, getAllGyms);
 
 export default router;

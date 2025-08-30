@@ -1,3 +1,143 @@
+/* Force Bootstrap .btn to use custom styles for SearchGyms */
+.searchgyms-btn,
+.searchgyms-btn-search,
+.searchgyms-btn-request,
+.searchgyms-btn-reset,
+.searchgyms-btn-info,
+.searchgyms-btn-nav,
+.searchgyms-btn-filters {
+  background: #fff !important;
+  color: #111 !important;
+  border: 2px solid #f5e16e !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04) !important;
+}
+.searchgyms-btn:hover:not(:disabled),
+.searchgyms-btn-search:hover:not(:disabled),
+.searchgyms-btn-request:hover:not(:disabled),
+.searchgyms-btn-reset:hover:not(:disabled),
+.searchgyms-btn-info:hover:not(:disabled),
+.searchgyms-btn-nav:hover:not(:disabled),
+.searchgyms-btn-filters:hover:not(:disabled) {
+  background: #f9f9f9 !important;
+  color: #111 !important;
+  border-color: #FFD600 !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08) !important;
+}
+.searchgyms-btn-filters.active {
+  background: #fff !important;
+  color: #111 !important;
+  border: 2px solid #FFD600 !important;
+}
+.searchgyms-btn-joined {
+  background: #fff !important;
+  color: #111 !important;
+  border: 2px solid #f5e16e !important;
+}
+/* --- SearchGyms Custom Styles --- */
+
+.searchgyms-card {
+  background: #fff;
+  color: #111;
+  border-radius: 1.25rem;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  border: 1.5px solid #f5e16e;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.searchgyms-card:hover {
+  box-shadow: 0 6px 32px rgba(0,0,0,0.10);
+  border-color: #FFD600;
+}
+
+
+
+.searchgyms-btn {
+  background: #fff;
+  color: #111;
+  border: 2px solid #f5e16e;
+  border-radius: 1.5rem;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+  padding: 0.5rem 1.2rem;
+}
+.searchgyms-btn:hover:not(:disabled) {
+  background: #f9f9f9;
+  color: #111;
+  border-color: #FFD600;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+
+
+.searchgyms-btn-search,
+.searchgyms-btn-request,
+.searchgyms-btn-reset,
+.searchgyms-btn-info,
+.searchgyms-btn-nav,
+.searchgyms-btn-filters {
+  background: #fff;
+  color: #111;
+  border: 2px solid #f5e16e;
+}
+
+
+
+.searchgyms-btn-filters.active {
+  background: #fff;
+  color: #111;
+  border: 2px solid #FFD600;
+}
+
+
+
+.searchgyms-btn-joined {
+  background: #fff;
+  color: #111;
+  border: 2px solid #f5e16e;
+}
+
+
+
+.searchgyms-btn-link {
+  background: none;
+  color: #111;
+  border: none;
+  font-size: 1.2rem;
+  font-weight: bold;
+  box-shadow: none;
+}
+
+
+
+.searchgyms-icon {
+  color: #FFD600;
+  font-size: 1.2em;
+  transition: color 0.2s;
+}
+
+
+
+.searchgyms-input {
+  background: #fff;
+  color: #111;
+  border: 1.5px solid #f5e16e;
+  border-radius: 1rem;
+  box-shadow: none;
+  transition: border-color 0.2s;
+}
+.searchgyms-input:focus {
+  border-color: #FFD600;
+  outline: none;
+}
+
+
+
+.searchgyms-input-icon {
+  background: #fff;
+  border: 1.5px solid #f5e16e;
+  color: #FFD600;
+  border-radius: 1rem 0 0 1rem;
+}
 /* MyGyms page styles */
 .mygyms-container {
     background: linear-gradient(180deg, #fff 0%, #f8f9fa 100%);

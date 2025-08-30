@@ -11,6 +11,8 @@ import { registerOAuthGoogle } from '../src/api/user.mjs';
 import NotFound from '../pages/NotFound';
 import { registerAdmin, registerGym } from './api/gym.mjs';
 import MyGyms from '../pages/MyGyms';
+import { SearchGyms } from '../pages/SearchGyms';
+import DeniedRedirect from '../components/DeniedRedirect';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -19,6 +21,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [authType, setAuthType] = useState("login");
   const [gym, setGym] = useState(null);
+
 
 
   useEffect(() => {
@@ -190,6 +193,8 @@ function App() {
     }
   }
 
+  
+
   if (loading) {
     return (
       <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
@@ -211,8 +216,11 @@ function App() {
       }>
       <Route path='/' element={<Home loggedIn={loggedIn} user={user} gym={gym}></Home>}></Route>
       <Route path='/auth' element={loggedIn ? <Navigate replace to='/'></Navigate> : <AuthForm authType={authType} setAuthType={setAuthType} handleAuth={handleAuth} googleAuth={GoogleLoginButton} gymAuth={gymAuth}></AuthForm>}></Route>
-      <Route path='/my-gyms' element={<MyGyms user={user}></MyGyms>}></Route>
-      <Route path='/search-gyms' element={<SearchGyms user={user}></SearchGyms>}></Route>
+      <Route path='/my-gyms' element={
+        loggedIn ? <MyGyms user={user} /> : <DeniedRedirect setMessage={setMessage} />
+      } />
+
+      <Route path='/search-gyms' element={loggedIn ? <SearchGyms user={user}></SearchGyms> : <DeniedRedirect setMessage={setMessage} />}></Route>
 
 
 

@@ -40,17 +40,23 @@ export async function updateGym(gymData) { //posso passare solo i campi da modif
 
 // --- TROVA TUTTE LE PALESTRE ---
 export async function findAllGyms({ page = 1, pageSize = 20, data = {} } = {}) {
-    const skip = (page - 1) * pageSize;
-    const take = pageSize;
-        const where = {};
+    const skip = (parseInt(page) - 1) * parseInt(pageSize);
+    const take = parseInt(pageSize);
+        let where = {};
+        console.log(data);
         if (data.name) where.name = { contains: data.name, mode: 'insensitive' };
         if (data.address) where.address = { contains: data.address, mode: 'insensitive' };
         if (data.city) where.city = { contains: data.city, mode: 'insensitive' };
         if (data.description) where.description = { contains: data.description, mode: 'insensitive' };
         if (data.email) where.email = { contains: data.email, mode: 'insensitive' };
         if (typeof data.verified === 'boolean') where.verified = data.verified;
+        else {
+            where.verified = data.verified === 'true';
+        }
         if (data.latitude) where.latitude = data.latitude;
         if (data.longitude) where.longitude = data.longitude;
+
+        console.log(where);
 
     const [gyms, total] = await Promise.all([
         prisma.gym.findMany({

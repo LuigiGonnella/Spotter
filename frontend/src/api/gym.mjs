@@ -115,7 +115,6 @@ async function ProtectedRoute(url, options = {}) {
     else {
       console.error("refresh error")
       localStorage.removeItem('accessToken');
-      throw "Access to protected route denied";
     }
 
   }
@@ -140,10 +139,20 @@ export async function getUserGyms(userId) {
     
 }
 
-export async function findAllGyms(page = 1, pageSize = 20) {
-    const res = fetch(VITE_API_URL+`/api/gyms/findAll?page=${page}&pageSize=${pageSize}`, {
-        method: 'GET'
-    });
+export async function findAllGyms(page = 1, pageSize = 20, data) {
+    console.log(data);
+     const accessToken = localStorage.getItem('accessToken');
+    const queryData = encodeURIComponent(JSON.stringify(data)); //come passare oggetto come query parameter
 
-    return handleApiResponse(res);
+    const url = VITE_API_URL+`/api/gyms/findAll?page=${page}&pageSize=${pageSize}&data=${queryData}`;
+    const options = {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-type': 'application/json',
+        },
+        credentials: 'include'
+    };
+
+    return ProtectedRoute(url, options);
 }
