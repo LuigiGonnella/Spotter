@@ -32,6 +32,10 @@ function NavHeader(props) {
                   <i className="bi bi-building me-1"></i>
                   My Gyms
                 </Nav.Link>
+                <Nav.Link as={Link} to="/search-gyms" className="fw-semibold text-light">
+                  <i className="bi bi-search me-2"></i>
+                  Search Gyms
+                </Nav.Link>
                 <Nav.Link as={Link} to="/workout-plans" className="fw-semibold text-light">
                   <i className="bi bi-clipboard-data me-1"></i>
                   Workout Plans

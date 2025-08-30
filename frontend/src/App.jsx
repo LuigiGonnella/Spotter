@@ -220,7 +220,7 @@ function App() {
         loggedIn ? <MyGyms user={user} /> : <DeniedRedirect setMessage={setMessage} />
       } />
 
-      <Route path='/search-gyms' element={loggedIn ? <SearchGyms user={user}></SearchGyms> : <DeniedRedirect setMessage={setMessage} />}></Route>
+      <Route path='/search-gyms' element={loggedIn ? <SearchGyms user={user} setMessage={setMessage}></SearchGyms> : <DeniedRedirect setMessage={setMessage} />}></Route>
 
 
 

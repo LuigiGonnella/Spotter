@@ -22,7 +22,7 @@ export async function findTokenById(jti) {
 
 export async function updateToken(tokenData) {
     try {
-        return await prisma.user.update(
+        return await prisma.refreshToken.update(
         {
             where: {jti: tokenData.jti},
             data: tokenData

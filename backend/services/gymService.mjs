@@ -39,7 +39,7 @@ export async function updateGym(gymData) { //posso passare solo i campi da modif
 }
 
 // --- TROVA TUTTE LE PALESTRE ---
-export async function findAllGyms({ page = 1, pageSize = 20, data = {} } = {}) {
+export async function findAllGyms({ page = 1, pageSize = 1, data = {} } = {}) {
     const skip = (parseInt(page) - 1) * parseInt(pageSize);
     const take = parseInt(pageSize);
         let where = {};
@@ -73,8 +73,8 @@ export async function findAllGyms({ page = 1, pageSize = 20, data = {} } = {}) {
     return {
         gyms,
         pagination: {
-            page,
-            pageSize,
+            page: parseInt(page),
+            pageSize: parseInt(pageSize),
             total,
             totalPages: Math.ceil(total / pageSize),
             hasMore: skip + take < total

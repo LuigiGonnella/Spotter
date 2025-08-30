@@ -26,12 +26,12 @@
 .searchgyms-btn-filters.active {
   background: #fff !important;
   color: #111 !important;
-  border: 2px solid #FFD600 !important;
+  border: 4px solid #FFD600 !important;
 }
 .searchgyms-btn-joined {
   background: #fff !important;
   color: #111 !important;
-  border: 2px solid #f5e16e !important;
+  border: 4px solid #f5e16e !important;
 }
 /* --- SearchGyms Custom Styles --- */
 

@@ -21,7 +21,7 @@ const handleApiResponse = async (response) => {
             : errorData.error || 'Validation error';
           break;
         case 401:
-          errorMessage = errorData.error || 'Authentication required. Please log in.';
+          errorMessage = 'Authentication required. Please log in.';
           break;
         case 403:
           errorMessage = errorData.error || 'Access denied. You do not have permission for this action.';
@@ -74,9 +74,9 @@ async function ProtectedRoute(url, options = {}) {
       res = await fetch(url, options); //riprovo stessa route
     }
     else {
+      res=refresh;
       console.error("refresh error")
       localStorage.removeItem('accessToken');
-      throw "Access to protected route denied";
     }
 
   }

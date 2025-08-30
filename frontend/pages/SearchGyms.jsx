@@ -2,16 +2,17 @@ import { useEffect, useState } from "react";
 import { findAllGyms, getUserGyms } from "../src/api/gym.mjs";
 import { Alert } from "react-bootstrap";
 import { Container, Row, Col, Form, Button, Card, InputGroup } from "react-bootstrap";
-import { useRef } from "react";
 
 
 export function SearchGyms(props) {
-    const debounceRef = useRef();
+    const [filteredGyms, setFilteredGyms] = useState([]);
+
+    
 
     const [pagination, setPagination] = useState({
         page : 1,
-        pageSize : 20,
-        total : 20,
+        pageSize : 1,
+        total : 1,
         totalPages: 1,
         hasMore : false
     });
@@ -36,7 +37,7 @@ export function SearchGyms(props) {
         setPagination(e => ({...e, page: e.page+1}));
     }
 
-    async function findGyms(page=1, pageSize=20, search=data) {
+    async function findGyms(page=1, pageSize=pagination.pageSize, search=data) {
             try {
             setLoading(true);
             const {gyms, pagination, links} = await findAllGyms(page, pageSize, search);
@@ -47,7 +48,7 @@ export function SearchGyms(props) {
 
             
             } catch (error) {
-                <Alert variant="danger" dismissible className="shadow-sm border-0 fw-semibold">Error in processing gyms data</Alert>
+                props.setMessage({msg: `${error}`, type:'danger'});
             } finally {
                 setLoading(false);
             }
@@ -55,21 +56,33 @@ export function SearchGyms(props) {
         }
 
     useEffect(() => {
-        findGyms();
+        findGyms(pagination.page, pagination.pageSize, data);
         console.log(gyms);
-    }, []);
+    }, [pagination.page]); //singolo campo va bene
 
     const [MyGyms, setMyGyms] = useState([]);
     
     useEffect(() => {
         async function fetchGyms() {
-            if (props.user && props.user.id) {
+            try {
+                if (props.user && props.user.id) {
                 const gyms_loc = await getUserGyms(props.user.id);
                 setMyGyms(gyms_loc);
             }
+                
+            } catch (error) {
+
+                props.setMessage({msg: `${error}`, type:'danger'});
+                
+            }
+            
         }
         fetchGyms();
     }, [props.user?.id]);
+
+    useEffect(() => {
+    setFilteredGyms(gyms);
+    }, [gyms]);
 
   
     const [showFilters, setShowFilters] = useState(false);
@@ -77,7 +90,7 @@ export function SearchGyms(props) {
 
     function handleSearch(e) {
         e.preventDefault();
-        findGyms(pagination.page, 20, data);
+        findGyms(pagination.page, pagination.pageSize, data);
     }
 
     if (loading) {
@@ -120,7 +133,10 @@ export function SearchGyms(props) {
                         type="text"
                         placeholder="Gym Name"
                         value={data.name}
-                        onChange={e => setSearchData(prev => ({ ...prev, name: e.target.value }))}
+                        onChange={e => {
+                            setSearchData(prev => ({ ...prev, name: e.target.value }));
+                            setFilteredGyms( gyms.filter(gym => (gym.name.toLowerCase().includes(e.target.value.toLowerCase()))));
+                        }}
                         disabled={loading}
                         className="searchgyms-input"
                       />
@@ -135,7 +151,9 @@ export function SearchGyms(props) {
                             type="text"
                             placeholder="Address"
                             value={data.address}
-                            onChange={e => setSearchData(prev => ({ ...prev, address: e.target.value }))}
+                            onChange={e => {setSearchData(prev => ({ ...prev, address: e.target.value }));
+                            setFilteredGyms( gyms.filter(gym => (gym.address.toLowerCase().includes(e.target.value.toLowerCase()))));
+                        }}
                             disabled={loading}
                             className="searchgyms-input"
                           />
@@ -148,7 +166,9 @@ export function SearchGyms(props) {
                             type="text"
                             placeholder="City"
                             value={data.city}
-                            onChange={e => setSearchData(prev => ({ ...prev, city: e.target.value }))}
+                            onChange={e => {setSearchData(prev => ({ ...prev, city: e.target.value }));
+                            setFilteredGyms( gyms.filter(gym => (gym.city.toLowerCase().includes(e.target.value.toLowerCase()))));
+                        }}
                             disabled={loading}
                             className="searchgyms-input"
                           />
@@ -161,7 +181,8 @@ export function SearchGyms(props) {
                             type="text"
                             placeholder="Description"
                             value={data.description}
-                            onChange={e => setSearchData(prev => ({ ...prev, description: e.target.value }))}
+                            onChange={e => {setSearchData(prev => ({ ...prev, description: e.target.value }));
+                        setFilteredGyms( gyms.filter(gym => (gym.description.toLowerCase().includes(e.target.value.toLowerCase()))));}}
                             disabled={loading}
                             className="searchgyms-input"
                           />
@@ -174,7 +195,10 @@ export function SearchGyms(props) {
                             type="email"
                             placeholder="Email"
                             value={data.email}
-                            onChange={e => setSearchData(prev => ({ ...prev, email: e.target.value }))}
+                            onChange={e => {setSearchData(prev => ({ ...prev, email: e.target.value }));
+                                setFilteredGyms( gyms.filter(gym => (gym.email.toLowerCase().includes(e.target.value.toLowerCase()))));
+                            }
+                            }
                             disabled={loading}
                             className="searchgyms-input"
                           />
@@ -184,8 +208,22 @@ export function SearchGyms(props) {
                         <InputGroup>
                           <InputGroup.Text className="searchgyms-input-icon"><i className="bi bi-check2-circle searchgyms-icon" /></InputGroup.Text>
                           <Form.Select
+                            type='text'
                             value={data.verified}
-                            onChange={e => setSearchData(prev => ({ ...prev, verified: e.target.value }))}
+                            onChange={e => {setSearchData(prev => ({ ...prev, verified: e.target.value }));
+
+                            setFilteredGyms( gyms.filter(gym => {
+                                if (e.target.value === 'true') {
+                                    return gym.verified === true;
+                                }
+                                else if (e.target.value == 'false') {
+                                    return gym.verified === false;
+                                }
+                                else {
+                                    return true;
+                                }
+                            }));
+                        }}
                             disabled={loading}
                             className="searchgyms-input"
                           >
@@ -202,7 +240,9 @@ export function SearchGyms(props) {
                             type="number"
                             placeholder="Latitude"
                             value={data.latitude}
-                            onChange={e => setSearchData(prev => ({ ...prev, latitude: e.target.value }))}
+                            onChange={e => {setSearchData(prev => ({ ...prev, latitude: e.target.value }));
+                        
+                        setFilteredGyms( gyms.filter(gym => (gym.latitude===e.target.value)));}}
                             disabled={loading}
                             className="searchgyms-input"
                           />
@@ -215,7 +255,10 @@ export function SearchGyms(props) {
                             type="number"
                             placeholder="Longitude"
                             value={data.longitude}
-                            onChange={e => setSearchData(prev => ({ ...prev, longitude: e.target.value }))}
+                            onChange={e => {setSearchData(prev => ({ ...prev, longitude: e.target.value }));
+                        
+                            setFilteredGyms( gyms.filter(gym => (gym.longitude===e.target.value.toLowerCase)));
+                        }}
                             disabled={loading}
                             className="searchgyms-input"
                           />
@@ -226,7 +269,7 @@ export function SearchGyms(props) {
                   <Col xs={12} md={6} className="d-grid mt-2">
                     <Button
                       disabled={loading}
-                      onClick={() => setSearchData({
+                      onClick={() => {setSearchData({
                         name: "",
                         address: "",
                         city: "",
@@ -235,7 +278,10 @@ export function SearchGyms(props) {
                         verified: "",
                         latitude: "",
                         longitude: ""
-                      })}
+                      });
+
+                      setFilteredGyms(gyms);
+                    }}
                       className="searchgyms-btn searchgyms-btn-reset"
                     >
                       <i className="bi bi-x-circle me-2 searchgyms-icon" />Reset filters
@@ -257,13 +303,13 @@ export function SearchGyms(props) {
         </Col>
       </Row>
       <Row>
-        {gyms.length === 0 && !loading && (
+        {filteredGyms.length === 0 && !loading && (
           <Col className="text-center text-muted py-5">
             <i className="bi bi-emoji-frown fs-1 mb-2 searchgyms-icon" />
             <div>No gym found.</div>
           </Col>
         )}
-        {gyms.map((gym) => (
+        {filteredGyms.map((gym) => (
           <Col xs={12} md={6} lg={4} className="mb-4" key={gym.id}>
             <Card className="searchgyms-card">
               <Card.Body>

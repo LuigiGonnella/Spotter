@@ -139,6 +139,7 @@ export async function googleOAuth(req, res, next) {
         const { token: refreshToken, jti } = generateRefreshToken({ userId: user.id });
         const tokenHash = await hashToken(refreshToken);
         const expiresAt = new Date(Date.now() + ms(REFRESH_TOKEN_EXP));
+        console.log('Refresh token:', refreshToken);
 
          const tokenJS = await createRefreshToken({ jti, tokenHash, userId: user.id, expiresAt });
 
@@ -184,6 +185,7 @@ export async function login(req, res, next) {
         const { token: refreshToken, jti } = generateRefreshToken({ userId: user.id });
         const tokenHash = await hashToken(refreshToken);
         const expiresAt = new Date(Date.now() + ms(REFRESH_TOKEN_EXP));
+        console.log('Refresh token:', jti);
         const tokenJS = await createRefreshToken({ jti, tokenHash , userId: user.id, expiresAt });
 
         res.cookie('refreshToken', refreshToken, cookieOptions(expiresAt.getTime()-Date.now()));
@@ -213,7 +215,7 @@ export async function refresh(req, res) {
 
   let payload;
   try {
-    payload = await verifyRefreshToken(token);
+    payload =  verifyRefreshToken(token);
   } catch {
     return res.status(401).json({ error: 'Invalid refresh token' });
   }
@@ -221,14 +223,19 @@ export async function refresh(req, res) {
   const stored = await findTokenById(payload.jti);
   if (!stored || stored.revoked) return res.status(401).json({ error: 'Token revoked' });
 
-  const match = await verifyToken(stored.tokenHash, token);
+  //console.log(stored.tokenHash);
+
+  const match = await verifyToken(token, stored.tokenHash);
   if (!match) return res.status(401).json({ error: 'Token mismatch' });
+
+  console.log(payload.jti);
 
   await updateToken({ jti:payload.jti, revoked:true });
 
   const user = await findUserById(stored.userId);
   const { token: accessToken } = generateAccessToken({ userId: user.id, email: user.email, role: user.role });
   const { token: newRefreshToken, jti: newJti } = generateRefreshToken({ userId: user.id });
+  console.log('Refresh token'+newRefreshToken);
   const newHash = await hashToken(newRefreshToken);
   const expiresAt = new Date(Date.now() + ms(REFRESH_TOKEN_EXP));
 
