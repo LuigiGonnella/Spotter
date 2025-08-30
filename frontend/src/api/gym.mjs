@@ -140,7 +140,7 @@ export async function getUserGyms(userId) {
     
 }
 
-export async function findAllGyms(page = 1, pageSize = 1, data) {
+export async function findAllGyms(page = 1, pageSize = 20, data) {
     console.log(data);
     const accessToken = localStorage.getItem('accessToken');
     const queryData = encodeURIComponent(JSON.stringify(data)); //come passare oggetto come query parameter

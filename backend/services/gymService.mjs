@@ -39,7 +39,7 @@ export async function updateGym(gymData) { //posso passare solo i campi da modif
 }
 
 // --- TROVA TUTTE LE PALESTRE ---
-export async function findAllGyms({ page = 1, pageSize = 1, data = {} } = {}) {
+export async function findAllGyms({ page = 1, pageSize = 20, data = {} } = {}) {
     const skip = (parseInt(page) - 1) * parseInt(pageSize);
     const take = parseInt(pageSize);
         let where = {};
@@ -81,7 +81,7 @@ export async function findAllGyms({ page = 1, pageSize = 1, data = {} } = {}) {
         },
         links: { //HATEAOS
             self: `/api/gyms/findAll?page=${page}&pageSize=${pageSize}`,
-            prev: page > 1 ? `/api/gyms/findAll?skip=${page-1}&pageSize=${pageSize}` : null,
+            prev: page > 1 ? `/api/gyms/findAll?page=${page-1}&pageSize=${pageSize}` : null,
             next: skip + take < total ? `/api/gyms/findAll?page=${page+1}&pageSize=${pageSize}` : null
 
         }

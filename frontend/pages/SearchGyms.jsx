@@ -8,7 +8,7 @@ export function SearchGyms(props) {
     
     const [pagination, setPagination] = useState({
         page : 1,
-        pageSize : 1,
+        pageSize : 20,
         total : 1,
         totalPages: 1,
         hasMore : false
@@ -122,7 +122,7 @@ export function SearchGyms(props) {
                                     </h4>
                                     <Button
                                         onClick={() => setShowFilters((prev) => !prev)}
-                                        className={`search-gyms-toggle-btn ${showFilters ? "active" : ""}`}
+                                        className={`btn-dark search-gyms-toggle-btn ${showFilters ? "active" : ""}`}
                                     >
                                         <i className={`bi ${showFilters ? "bi-eye-slash" : "bi-eye"} me-2`} />
                                         {showFilters ? "Hide Advanced" : "Show Advanced"}
@@ -144,7 +144,7 @@ export function SearchGyms(props) {
                                                     onChange={e => {
                                                         setSearchData(prev => ({ ...prev, name: e.target.value }));
                                                         setFilteredGyms(gyms.filter(gym => 
-                                                            gym.name.toLowerCase().includes(e.target.value.toLowerCase())
+                                                            gym.name.toLowerCase().startsWith(e.target.value.toLowerCase())
                                                         ));
                                                     }}
                                                     disabled={loading}
@@ -168,7 +168,7 @@ export function SearchGyms(props) {
                                                             onChange={e => {
                                                                 setSearchData(prev => ({ ...prev, address: e.target.value }));
                                                                 setFilteredGyms(gyms.filter(gym => 
-                                                                    gym.address.toLowerCase().includes(e.target.value.toLowerCase())
+                                                                    gym.address.toLowerCase().startsWith(e.target.value.toLowerCase())
                                                                 ));
                                                             }}
                                                             disabled={loading}
@@ -188,7 +188,7 @@ export function SearchGyms(props) {
                                                             onChange={e => {
                                                                 setSearchData(prev => ({ ...prev, city: e.target.value }));
                                                                 setFilteredGyms(gyms.filter(gym => 
-                                                                    gym.city.toLowerCase().includes(e.target.value.toLowerCase())
+                                                                    gym.city.toLowerCase().startsWith(e.target.value.toLowerCase())
                                                                 ));
                                                             }}
                                                             disabled={loading}
@@ -208,7 +208,7 @@ export function SearchGyms(props) {
                                                             onChange={e => {
                                                                 setSearchData(prev => ({ ...prev, description: e.target.value }));
                                                                 setFilteredGyms(gyms.filter(gym => 
-                                                                    gym.description && gym.description.toLowerCase().includes(e.target.value.toLowerCase())
+                                                                    gym.description && gym.description.toLowerCase().startsWith(e.target.value.toLowerCase())
                                                                 ));
                                                             }}
                                                             disabled={loading}
@@ -228,7 +228,7 @@ export function SearchGyms(props) {
                                                             onChange={e => {
                                                                 setSearchData(prev => ({ ...prev, email: e.target.value }));
                                                                 setFilteredGyms(gyms.filter(gym => 
-                                                                    gym.email && gym.email.toLowerCase().includes(e.target.value.toLowerCase())
+                                                                    gym.email && gym.email.toLowerCase().startsWith(e.target.value.toLowerCase())
                                                                 ));
                                                             }}
                                                             disabled={loading}
@@ -326,9 +326,9 @@ export function SearchGyms(props) {
                                                     });
                                                     setFilteredGyms(gyms);
                                                 }}
-                                                className="search-gyms-reset-btn"
+                                                className="search-gyms-reset-btn btn-dark"
                                             >
-                                                <i className="bi bi-arrow-clockwise me-2" />
+                                                <i className="bi bi-arrow-clockwise me-2 btn-dark" />
                                                 Reset All Filters
                                             </Button>
                                         </Col>
@@ -336,7 +336,7 @@ export function SearchGyms(props) {
                                             <Button
                                                 type="submit"
                                                 disabled={loading}
-                                                className="search-gyms-search-btn"
+                                                className="search-gyms-search-btn btn-dark"
                                             >
                                                 <i className="bi bi-search me-2" />
                                                 Search Gyms
@@ -414,7 +414,7 @@ export function SearchGyms(props) {
                                                     <Button
                                                         size="sm"
                                                         onClick={() => {/* TODO: send request */}}
-                                                        className="search-gyms-join-btn"
+                                                        className="search-gyms-join-btn btn-dark"
                                                     >
                                                         <i className="bi bi-person-plus me-2"></i>
                                                         Join Gym
@@ -423,7 +423,7 @@ export function SearchGyms(props) {
                                                 <Button
                                                     size="sm"
                                                     onClick={() => {/* TODO: see info */}}
-                                                    className="search-gyms-info-btn"
+                                                    className="search-gyms-info-btn btn-dark"
                                                 >
                                                     <i className="bi bi-info-circle me-2"></i>
                                                     View Details
@@ -462,7 +462,7 @@ export function SearchGyms(props) {
                                 <Button
                                     disabled={pagination.page >= pagination.totalPages || loading}
                                     onClick={onNext}
-                                    className="search-gyms-nav-btn"
+                                    className="search-gyms-nav-btn btn-dark"
                                 >
                                     Next
                                     <i className="bi bi-chevron-right ms-1"></i>
