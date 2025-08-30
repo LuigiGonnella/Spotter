@@ -1,156 +1,379 @@
-/* Force Bootstrap .btn to use custom styles for SearchGyms */
-.searchgyms-btn,
-.searchgyms-btn-search,
-.searchgyms-btn-request,
-.searchgyms-btn-reset,
-.searchgyms-btn-info,
-.searchgyms-btn-nav,
-.searchgyms-btn-filters {
-  background: #fff !important;
-  color: #111 !important;
-  border: 2px solid #f5e16e !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04) !important;
-}
-.searchgyms-btn:hover:not(:disabled),
-.searchgyms-btn-search:hover:not(:disabled),
-.searchgyms-btn-request:hover:not(:disabled),
-.searchgyms-btn-reset:hover:not(:disabled),
-.searchgyms-btn-info:hover:not(:disabled),
-.searchgyms-btn-nav:hover:not(:disabled),
-.searchgyms-btn-filters:hover:not(:disabled) {
-  background: #f9f9f9 !important;
-  color: #111 !important;
-  border-color: #FFD600 !important;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08) !important;
-}
-.searchgyms-btn-filters.active {
-  background: #fff !important;
-  color: #111 !important;
-  border: 4px solid #FFD600 !important;
-}
-.searchgyms-btn-joined {
-  background: #fff !important;
-  color: #111 !important;
-  border: 4px solid #f5e16e !important;
-}
-/* --- SearchGyms Custom Styles --- */
+/* ========================================
+   SEARCH GYMS PAGE STYLES
+   ======================================== */
 
-.searchgyms-card {
-  background: #fff;
-  color: #111;
-  border-radius: 1.25rem;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.06);
-  border: 1.5px solid #f5e16e;
-  transition: box-shadow 0.2s, border-color 0.2s;
-}
-.searchgyms-card:hover {
-  box-shadow: 0 6px 32px rgba(0,0,0,0.10);
-  border-color: #FFD600;
+.search-gyms-container {
+    background: linear-gradient(180deg, #fff 0%, #f8f9fa 100%);
+    min-height: 100vh;
 }
 
-
-
-.searchgyms-btn {
-  background: #fff;
-  color: #111;
-  border: 2px solid #f5e16e;
-  border-radius: 1.5rem;
-  font-weight: 500;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
-  padding: 0.5rem 1.2rem;
-}
-.searchgyms-btn:hover:not(:disabled) {
-  background: #f9f9f9;
-  color: #111;
-  border-color: #FFD600;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+/* Header Section */
+.search-gyms-header {
+    margin-bottom: 2rem;
 }
 
-
-
-.searchgyms-btn-search,
-.searchgyms-btn-request,
-.searchgyms-btn-reset,
-.searchgyms-btn-info,
-.searchgyms-btn-nav,
-.searchgyms-btn-filters {
-  background: #fff;
-  color: #111;
-  border: 2px solid #f5e16e;
+.search-gyms-header-icon {
+    font-size: 3rem;
+    color: #FFD700;
+    margin-bottom: 1rem;
+    display: block;
 }
 
-
-
-.searchgyms-btn-filters.active {
-  background: #fff;
-  color: #111;
-  border: 2px solid #FFD600;
+.search-gyms-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 1rem;
+    letter-spacing: -1px;
 }
 
-
-
-.searchgyms-btn-joined {
-  background: #fff;
-  color: #111;
-  border: 2px solid #f5e16e;
+.search-gyms-subtitle {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 0;
 }
 
-
-
-.searchgyms-btn-link {
-  background: none;
-  color: #111;
-  border: none;
-  font-size: 1.2rem;
-  font-weight: bold;
-  box-shadow: none;
+/* Form Card */
+.search-gyms-form-card {
+    background: #fff;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    overflow: hidden;
 }
 
-
-
-.searchgyms-icon {
-  color: #FFD600;
-  font-size: 1.2em;
-  transition: color 0.2s;
+.search-gyms-form-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 0;
 }
 
-
-
-.searchgyms-input {
-  background: #fff;
-  color: #111;
-  border: 1.5px solid #f5e16e;
-  border-radius: 1rem;
-  box-shadow: none;
-  transition: border-color 0.2s;
-}
-.searchgyms-input:focus {
-  border-color: #FFD600;
-  outline: none;
+/* Toggle Button */
+.search-gyms-toggle-btn {
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    color: #111;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 8px 16px;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+    transition: all 0.3s ease;
 }
 
-
-
-.searchgyms-input-icon {
-  background: #fff;
-  border: 1.5px solid #f5e16e;
-  color: #FFD600;
-  border-radius: 1rem 0 0 1rem;
+.search-gyms-toggle-btn:hover {
+    background: linear-gradient(135deg, #FFA500 0%, #FFD700 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
 }
-/* MyGyms page styles */
+
+.search-gyms-toggle-btn.active {
+    background: linear-gradient(135deg, #111 0%, #333 100%);
+    color: #FFD700;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+/* Input Groups */
+.search-gyms-input-group {
+    margin-bottom: 0;
+}
+
+.search-gyms-input-icon {
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    border: none;
+    color: #111;
+    font-weight: 600;
+    border-radius: 12px 0 0 12px;
+    width: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-gyms-input {
+    background: #fff;
+    color: #111;
+    border: 2px solid #f0f0f0;
+    border-left: none;
+    border-radius: 0 12px 12px 0;
+    font-size: 1rem;
+    padding: 12px 16px;
+    transition: all 0.3s ease;
+}
+
+.search-gyms-input:focus {
+    border-color: #FFD700;
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+    background: #fffef7;
+}
+
+.search-gyms-input-primary {
+    font-size: 1.1rem;
+    padding: 16px 20px;
+    font-weight: 500;
+}
+
+/* Action Buttons */
+.search-gyms-reset-btn {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 12px 24px;
+    font-size: 1rem;
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+    transition: all 0.3s ease;
+}
+
+.search-gyms-reset-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #495057 0%, #6c757d 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+}
+
+.search-gyms-search-btn {
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    color: #111;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    padding: 12px 24px;
+    font-size: 1rem;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.search-gyms-search-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #FFA500 0%, #FFD700 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+}
+
+/* Empty State */
+.search-gyms-empty-card {
+    background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+}
+
+.search-gyms-empty-icon {
+    font-size: 4rem;
+    color: #FFD700;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.search-gyms-empty-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 0.5rem;
+}
+
+.search-gyms-empty-text {
+    color: #666;
+    font-size: 1rem;
+    margin-bottom: 0;
+}
+
+/* Gym Cards */
+.search-gyms-gym-card {
+    background: #fff;
+    border: none;
+    border-radius: 18px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    height: 100%;
+    overflow: hidden;
+}
+
+.search-gyms-gym-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+}
+
+.search-gyms-gym-header {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    gap: 1rem;
+}
+
+.search-gyms-gym-icon-wrapper {
+    position: relative;
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    border-radius: 12px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.search-gyms-gym-icon {
+    font-size: 1.5rem;
+    color: #111;
+}
+
+.search-gyms-verified-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #28a745;
+    color: #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    border: 2px solid #fff;
+}
+
+.search-gyms-gym-info {
+    flex: 1;
+}
+
+.search-gyms-gym-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 0.25rem;
+    line-height: 1.2;
+}
+
+.search-gyms-gym-location {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 0;
+}
+
+.search-gyms-gym-description {
+    color: #555;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+
+.search-gyms-gym-email {
+    color: #666;
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Gym Action Buttons */
+.search-gyms-gym-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.search-gyms-join-btn {
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    color: #111;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    box-shadow: 0 3px 10px rgba(255, 215, 0, 0.3);
+    transition: all 0.3s ease;
+    flex: 1;
+}
+
+.search-gyms-join-btn:hover {
+    background: linear-gradient(135deg, #FFA500 0%, #FFD700 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+}
+
+.search-gyms-joined-btn {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+    flex: 1;
+    cursor: not-allowed;
+}
+
+.search-gyms-info-btn {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    box-shadow: 0 3px 10px rgba(108, 117, 125, 0.3);
+    transition: all 0.3s ease;
+    flex: 1;
+}
+
+.search-gyms-info-btn:hover {
+    background: linear-gradient(135deg, #495057 0%, #6c757d 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+}
+
+/* Navigation Buttons */
+.search-gyms-nav-btn {
+    background: linear-gradient(135deg, #111 0%, #333 100%);
+    color: #FFD700;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 10px 20px;
+    font-size: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.search-gyms-nav-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #333 0%, #111 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.search-gyms-page-info {
+    background: #fff;
+    border-radius: 12px;
+    padding: 10px 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.search-gyms-page-text {
+    font-weight: 600;
+    color: #111;
+    font-size: 1rem;
+}
+
+/* ========================================
+   MY GYMS PAGE STYLES
+   ======================================== */
+
 .mygyms-container {
     background: linear-gradient(180deg, #fff 0%, #f8f9fa 100%);
     min-height: 100vh;
 }
+
 .mygyms-title {
     font-size: 2.2rem;
     color: #111;
     letter-spacing: -1px;
 }
+
 .mygyms-subtitle {
     font-size: 1.1rem;
 }
+
 .mygyms-subscribe-btn {
     background: linear-gradient(90deg, #ffd700 0%, #ffb700 100%);
     color: #111;
@@ -160,30 +383,36 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.10);
     transition: background 0.2s;
 }
+
 .mygyms-subscribe-btn:disabled {
     opacity: 0.7;
     cursor: not-allowed;
 }
+
 .mygyms-card {
     border-radius: 18px;
     background: #fff;
     box-shadow: 0 4px 16px rgba(0,0,0,0.08);
     padding: 24px 18px;
 }
+
 .mygyms-card-empty {
     border-radius: 18px;
     background: #fffbe6;
     box-shadow: 0 4px 16px rgba(255,193,7,0.10);
     padding: 32px 18px;
 }
+
 .mygyms-gymname {
     color: #d4af37;
     font-size: 1.3rem;
 }
+
 .mygyms-description {
     font-size: 1rem;
     color: #333;
 }
+
 .mygyms-email {
     font-size: 0.95rem;
 }
