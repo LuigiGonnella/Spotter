@@ -28,10 +28,8 @@ function Home(props) {
             
             {/* Hero Section */}
             {!props.loggedIn && (
-            <div className="text-center py-5 mb-4" style={{backgroundColor: '#000000', color: '#ffffff'}}>
-                <Container>
-                    <Row className="justify-content-center">
-                        <Col lg={8}>
+                <Row className="justify-content-center">
+                        <Col className="text-center mt-5 mb-5 py-5" style={{backgroundColor: '#000000', color: '#ffffff', borderRadius : '16px'}} lg={6}>
                             <i className="bi bi-trophy-fill display-4 text-warning mb-3"></i>
                             <h3 className=" fw-bold mb-3">
                                 Welcome to Spotter
@@ -52,8 +50,6 @@ function Home(props) {
                     
                         </Col>
                     </Row>
-                </Container>
-            </div>
             )}
 
                 {props.loggedIn ? (

@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Badge, Tab, Tabs, Modal, Form, Table, Pagination } from 'react-bootstrap';
 import { useNavigate } from 'react-router';
 import { getUserGymsApi, updateGymMembershipApi } from '../src/api/gym.mjs';
+import { Link } from 'react-router';
 
 export default function ProfileAdmin(props) {
     const navigate = useNavigate();
@@ -398,118 +399,6 @@ export default function ProfileAdmin(props) {
                                     </Col>
                                 </Row>
                             
-                            {/* Management Section */}
-                                <Row className="justify-content-center">
-                                    <Col md={10}>
-                                        <Card 
-                                            className="border-0"
-                                            style={{
-                                                background: '#fff',
-                                                borderRadius: '18px',
-                                                boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
-                                            }}
-                                        >
-                                            <Card.Header 
-                                                className="border-0"
-                                                style={{
-                                                    background: 'linear-gradient(135deg, #111 0%, #333 100%)',
-                                                    color: '#fff',
-                                                    borderRadius: '18px 18px 0 0',
-                                                    padding: '1.5rem'
-                                                }}
-                                            >
-                                                <h5 style={{ marginBottom: '0', fontWeight: '700', fontSize: '1.3rem' }}>
-                                                    <i className="bi bi-gear me-2"></i>
-                                                    Management Tools
-                                                </h5>
-                                            </Card.Header>
-                                            <Card.Body className="p-4">
-                                                <Row>
-                                                    <Col md={6} lg={3} className="mb-3">
-                                                        <Button 
-                                                            className="w-100 h-100"
-                                                            style={{
-                                                                background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
-                                                                color: '#ffffffff',
-                                                                border: 'none',
-                                                                borderRadius: '12px',
-                                                                fontWeight: '600',
-                                                                padding: '16px',
-                                                                fontSize: '1rem',
-                                                                boxShadow: '0 4px 15px rgba(255, 215, 0, 0.3)',
-                                                                transition: 'all 0.3s ease',
-                                                                minHeight: '80px'
-                                                            }}
-                                                        >
-                                                            <i className="bi bi-people d-block mb-2" style={{ fontSize: '1.5rem' }}></i>
-                                                            View All Members
-                                                        </Button>
-                                                    </Col>
-                                                    <Col md={6} lg={3} className="mb-3">
-                                                        <Button 
-                                                            className="w-100 h-100"
-                                                            style={{
-                                                                background: 'linear-gradient(135deg, #ffc107 0%, #fd7e14 100%)',
-                                                                color: '#fff',
-                                                                border: 'none',
-                                                                borderRadius: '12px',
-                                                                fontWeight: '600',
-                                                                padding: '16px',
-                                                                fontSize: '1rem',
-                                                                boxShadow: '0 4px 15px rgba(255, 193, 7, 0.3)',
-                                                                transition: 'all 0.3s ease',
-                                                                minHeight: '80px'
-                                                            }}
-                                                        >
-                                                            <i className="bi bi-clock-history d-block mb-2" style={{ fontSize: '1.5rem' }}></i>
-                                                            Pending Requests
-                                                        </Button>
-                                                    </Col>
-                                                    <Col md={6} lg={3} className="mb-3">
-                                                        <Button 
-                                                            className="w-100 h-100"
-                                                            style={{
-                                                                background: 'linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%)',
-                                                                color: '#fff',
-                                                                border: 'none',
-                                                                borderRadius: '12px',
-                                                                fontWeight: '600',
-                                                                padding: '16px',
-                                                                fontSize: '1rem',
-                                                                boxShadow: '0 4px 15px rgba(111, 66, 193, 0.3)',
-                                                                transition: 'all 0.3s ease',
-                                                                minHeight: '80px'
-                                                            }}
-                                                        >
-                                                            <i className="bi bi-chat-square-text d-block mb-2" style={{ fontSize: '1.5rem' }}></i>
-                                                            View All Posts
-                                                        </Button>
-                                                    </Col>
-                                                    <Col md={6} lg={3} className="mb-3">
-                                                        <Button 
-                                                            className="w-100 h-100"
-                                                            style={{
-                                                                background: 'linear-gradient(135deg, #dc3545 0%, #fd7e14 100%)',
-                                                                color: '#fff',
-                                                                border: 'none',
-                                                                borderRadius: '12px',
-                                                                fontWeight: '600',
-                                                                padding: '16px',
-                                                                fontSize: '1rem',
-                                                                boxShadow: '0 4px 15px rgba(220, 53, 69, 0.3)',
-                                                                transition: 'all 0.3s ease',
-                                                                minHeight: '80px'
-                                                            }}
-                                                        >
-                                                            <i className="bi bi-clipboard-data d-block mb-2" style={{ fontSize: '1.5rem' }}></i>
-                                                            Workout Plans
-                                                        </Button>
-                                                    </Col>
-                                                </Row>
-                                            </Card.Body>
-                                        </Card>
-                                    </Col>
-                                </Row>
 
                                 {/* Quick Actions */}
                                 <Row className="justify-content-center mt-4">
@@ -782,23 +671,27 @@ export default function ProfileAdmin(props) {
                                                         </Badge>
                                                     </div>
                                                 </div>
-                                                <Button 
-                                                    className="w-100 mb-2"
-                                                    style={{
-                                                        background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
-                                                        color: '#fff',
-                                                        border: 'none',
-                                                        borderRadius: '12px',
-                                                        fontWeight: '600',
-                                                        padding: '10px 20px',
-                                                        fontSize: '1rem',
-                                                        boxShadow: '0 4px 15px rgba(40, 167, 69, 0.3)',
-                                                        transition: 'all 0.3s ease'
-                                                    }}
+                                                <Link to={props.gym?.id ? `/gyms/${props.gym?.id}/members` : '#'} //TODO members list
+											        state={{ gym: props?.gym || null }} //useLocation().state.gym
                                                 >
-                                                    <i className="bi bi-list me-2"></i>
-                                                    View All Members
-                                                </Button>
+                                                    <Button 
+                                                        className="w-100 mb-2"
+                                                        style={{
+                                                            background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
+                                                            color: '#fff',
+                                                            border: 'none',
+                                                            borderRadius: '12px',
+                                                            fontWeight: '600',
+                                                            padding: '10px 20px',
+                                                            fontSize: '1rem',
+                                                            boxShadow: '0 4px 15px rgba(40, 167, 69, 0.3)',
+                                                            transition: 'all 0.3s ease'
+                                                        }}
+                                                    >
+                                                        <i className="bi bi-list me-2"></i>
+                                                        View All Members
+                                                    </Button>
+                                                </Link>
                                                 <Button 
                                                     variant="outline-dark"
                                                     className="w-100"

@@ -14,4 +14,6 @@ router.put("/:gymId/users/:userId/updateMemberships", requireAuth, updateGymMemb
 
 router.get("/:gymId", requireAuth, getGymController); //rateLimiter
 
+
+
 export default router;

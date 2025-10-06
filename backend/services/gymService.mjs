@@ -219,7 +219,7 @@ export async function addUserToGym(userId, gymId) {
                 const updatedMembership = await prisma.userGym.update({
                     where: { id: existingMembership.id },
                     data: { 
-                        isActive: 'ACCEPTED', 
+                        isActive: 'PENDING', 
                         joinedAt: new Date()
                     },
                     include: {
@@ -418,6 +418,7 @@ export async function getGymMembers(gymId, options = {}) {
                 skip,
                 take,
                 total,
+                totalPages: Math.ceil(total / pageSize),
                 hasMore: skip + take < total
             }
         };

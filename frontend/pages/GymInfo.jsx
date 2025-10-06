@@ -41,7 +41,15 @@ export default function GymInfo(props) {
 
             
             fetchGyms();
-            obtainGym(gymId);
+
+			if (location.state.gym) {
+				setGym(location.state.gym);
+				
+			}
+			else {
+				obtainGym(gymId);
+			}
+            	
             
         }, []);
 
@@ -124,7 +132,7 @@ export default function GymInfo(props) {
 									<Col sm={4} className="mb-2">
 										<Link
 											to={gym?.id ? `/gyms/${gym.id}/members` : '#'} //TODO members list
-											state={{ gym: props?.gym || null }}
+											state={{ gym: props?.gym || null }} //useLocation().state.gym
 											style={{
 												 background: 'linear-gradient(135deg,#28a745 0%,#20c997 100%)',
 												color: '#fff',

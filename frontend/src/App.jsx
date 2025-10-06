@@ -16,6 +16,8 @@ import DeniedRedirect from '../components/DeniedRedirect';
 import ProfileAdmin from '../pages/ProfileAdmin';
 import ProfileUser from '../pages/ProfileUser';
 import GymInfo from '../pages/GymInfo';
+import GymMembers from '../pages/GymMembers';
+
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -237,6 +239,7 @@ function App() {
 
       <Route path='/profile-user' element={loggedIn ? <ProfileUser user={user} setMessage={setMessage}></ProfileUser> : <DeniedRedirect setMessage={setMessage} />}></Route>
 
+      <Route path='/gyms/:gymId/members' element={loggedIn ? <GymMembers user={user} setMessage={setMessage}></GymMembers> : <DeniedRedirect setMessage={setMessage} />}></Route>
 
 
 
