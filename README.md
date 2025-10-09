@@ -10,9 +10,7 @@ Connecting people who already share the same space (gym, weight room, fitness ar
 - **GymBro Feature** → send a request to a buddy to train together.  
 - **Local Community** → join your gym or nearby fitness centers.  
 - **Chat & Social** → direct chat with members to organize workouts.  
-- **Leaderboard & Ranking** → internal gym leaderboards for each exercise (e.g., bench press record 190 kg by Mario Rossi 🏆). --> palestre verificate creano degli exercises e utenti selezionano il loro record. Inizialmente esso è inserito come "non verificato" e dunque un record "poco affidabile", ognuno però con un numero di "validazioni" da parte di altri utenti (solo se della stessa palestra), così si può filtrare per palestra, per numero di validazioni ecc..
-
-
+- **Leaderboard & Ranking** → internal gym leaderboards for each exercise (e.g., bench press record 190 kg by Mario Rossi 🏆). 
 - **Discovery** → find new buddies in nearby gyms and expand your fitness network.  
 - **WorkoutPlan** → cerca utenti sulla piattaforma e accedi alle loro schede pubbliche
 - **WorkoutTracking** → inserisci la tua scheda e associala alla palestra che frequenti, tieni traccia degli allenamenti e degli esercizi
