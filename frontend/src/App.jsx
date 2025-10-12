@@ -126,7 +126,9 @@ function App() {
     }
   };
 
-  function GoogleLoginButton() {
+  function GoogleLoginButton(props) {
+  const gym_ = props?.gym_;
+  
   useEffect(() => {
     try {
       setLoading(true);
@@ -136,8 +138,8 @@ function App() {
         callback: async (response) => {
           // idToken restituito da Google
           const idToken = response.credential;
-
-          const user = await registerOAuthGoogle(idToken);
+          console.log(gym_)
+          const user = await registerOAuthGoogle(idToken, gym_);
           localStorage.setItem('accessToken', user.accessToken);
           setLoggedIn(true);
           setUser(user[0]);
@@ -145,8 +147,6 @@ function App() {
           setGym(user[1]);
         }
           setMessage({msg: `Login completed!, welcome ${user[0].firstName? user[0].firstName : user[0].email}`, type: "success"});
-
-          
         },
       });
 
@@ -170,7 +170,7 @@ function App() {
       setLoading(false);
     }
     
-  }, []);
+  }, [gym_]); // ✅ Aggiungi gym_ come dipendenza!
 
   return (
       <div

@@ -134,14 +134,22 @@ export async function register(data) { /*const { email, password, firstName, las
     return handleApiResponse(res);
 }
 
-export async function registerOAuthGoogle(idToken) {
-  const res = await fetch(VITE_API_URL+'/api/auth/oauth/google', {
+export async function registerOAuthGoogle(idToken, gym_) {
+  let gymId = null
+  console.log(gym_)
+  if(gym_) {
+    gymId = gym_.id
+  }
+  console.log(gymId)
+  console.log('user.mjs')
+    const res = await fetch(VITE_API_URL+'/api/auth/oauth/google', {
     method: 'POST',
     body: JSON.stringify({
-      'idToken': `${idToken}`
+      'gymId' : `${gymId}`,
+      'idToken' : `${idToken}`
     }),
     headers: {
-      'Content-Type': 'application/json' //se invio dati formato json nel body
+      'Content-Type': 'application/json'
     },
     credentials: 'include'
   })

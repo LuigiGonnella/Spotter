@@ -100,9 +100,13 @@ export async function registerAdmin(req, res, next) {
 
 
 export async function googleOAuth(req, res, next) {
+    
     try {
-        const {idToken} = req.body;
-
+        const {gymId, idToken} = req.body;
+        console.log(gymId)
+        console.log('oooooo')
+        
+        
         //verifica token google e ottiene payload
         const ticket = await googleClient.verifyIdToken({
             idToken,
@@ -129,7 +133,15 @@ export async function googleOAuth(req, res, next) {
         let user = await findUserByEmail(email);
 
         if (!user) { //se primo accesso
-            user = await createUser({email, provider: 'google', providerId});
+            console.log('updateeee')
+            console.log(user)
+            if (gymId!='undefined' && gymId != 'null') {
+                user = await createUser({email, provider: 'google', providerId, role: 'ADMIN', status_admin: 'PENDING'});
+            }
+            else {
+                user = await createUser({email, provider: 'google', providerId});
+            }
+            
 
         }
         else { //se la mail era già stata registrata tradizionalmente e l'utente ancora non è stato collegato a google
@@ -137,10 +149,17 @@ export async function googleOAuth(req, res, next) {
                 user = await updateUser({id: user.id, provider: 'google', providerId});   
             }
         }
+        if (gymId!='undefined' && gymId != 'null') {
+            console.log('ciaooo')
+            console.log(gymId)
+            console.log(user) 
+            const _ = await addAdminToGym(user.id, gymId);
+        }
         let gym = null;
         if (user.role === 'ADMIN') {
             gym = await getGymByAdmin(user.id);
         }
+        
         const { token: accessToken } = generateAccessToken({ userId: user.id, email: user.email, role: user.role });
         const { token: refreshToken, jti } = generateRefreshToken({ userId: user.id });
         const tokenHash = await hashToken(refreshToken);

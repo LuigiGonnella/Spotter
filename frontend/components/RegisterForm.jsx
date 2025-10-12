@@ -38,7 +38,8 @@ function RegisterForm(props) {
     }
     try {
       const gym = await props.gymAuth(data); //registro palestra
-      console.log(gym);
+      console.log('Gym received from backend:', gym);
+      console.log('Gym structure:', JSON.stringify(gym, null, 2));
       setGym(gym); //metto nello stato
       setRegisterType("Admin"); //dopo palestra esce view di registrazione admin
       return {success: true};
@@ -161,7 +162,8 @@ function RegisterForm(props) {
           </Card.Header>
           <Card.Body style={{ background: '#fff', padding: '32px 28px', boxShadow: '0 2px 16px rgba(0,0,0,0.10)' }}>
             <div className="d-flex justify-content-center mt-2 mb-4">
-              {props.googleAuth && <props.googleAuth />}
+              {console.log(gym)}
+              {props.googleAuth && <props.googleAuth gym_={gym}/>}
             </div>
             {selectedType==="Gym" &&  registerType==="Gym" &&
             <>

@@ -166,7 +166,24 @@ export async function findGymByName(name, limit = 50) {
  */
 export async function addAdminToGym(userId, gymId) {
     try {
-        // Aggiorna la palestra aggiungendo l'utente agli admin
+        // Verifica se l'utente è già admin di un'altra palestra
+        const existingAdmin = await prisma.user.findUnique({
+            where: { id: parseInt(userId) },
+            select: {
+                adminGymId: true,
+                role: true
+            }
+        });
+
+        if (!existingAdmin) {
+            logger.error(`Error adding admin ${userId} to gym ${gymId}: user not found`);
+            throw new Error(`User not found`);
+        }
+
+        if (existingAdmin.adminGymId && existingAdmin.adminGymId !== parseInt(gymId)) {
+            logger.error(`Error adding admin ${userId} to gym ${gymId}: user is already an admin of gym ${existingAdmin.adminGymId}`);
+            throw new Error(`User is already an admin of another gym`);
+        }
         const updatedGym = await prisma.gym.update({
             where: { id: parseInt(gymId) },
             data: {
@@ -186,6 +203,7 @@ export async function addAdminToGym(userId, gymId) {
                 }
             }
         });
+        console.log(updatedGym)
         logger.info(`User ${userId} added as admin to gym ${gymId}`);
         return updatedGym;
     } catch (error) {
